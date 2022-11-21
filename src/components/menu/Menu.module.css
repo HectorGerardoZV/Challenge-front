@@ -1,0 +1,41 @@
+.menu{
+    background-image: url("/images/image-back.png");
+    background-size: cover;
+    background-position: center center;
+    height: 100vh;
+    border-top-right-radius: 3rem;
+    border-bottom-right-radius: 3rem;
+    padding: 2rem;
+}
+
+.menu__logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    border-bottom: 2px solid white;
+    padding-bottom: 3rem;
+}
+.menu__logo img{
+    width: 8rem;
+}
+
+.menu__option{
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.menu__option a{
+    color: var(--color-text);
+}
+.btnLogout{
+    display: flex;
+    background-color: transparent;
+    gap: 2rem;
+    align-items: center;
+    color: var(--color-text);
+}
+.btnLogout img{
+    width: 3rem;
+}
