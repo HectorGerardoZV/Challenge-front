@@ -6,7 +6,7 @@ const UsersContext = createContext();
 const UsersProvider = ({ children }) => {
 
     const { token } = useContext(AuthContext);
-    const { toggleModal } = useContext(ModalContext);
+    const { toggleModal, setMessageModal, changeModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
     const [pages, setPages] = useState([1]);
@@ -35,6 +35,7 @@ const UsersProvider = ({ children }) => {
             for (let i = 1; i <= totalPages; i++) pagesOptions.push(i);
             setPages(pagesOptions);
         } catch (error) {
+            console.log(error);
             console.log(error.response);
         }
     }
@@ -84,7 +85,11 @@ const UsersProvider = ({ children }) => {
                     role: ""
                 });
                 await fetchUsers(1);
-                toggleModal("");
+                setMessageModal({
+                    type: "success",
+                    message: "User successfully created"
+                });
+                changeModal("Message");
             } catch (error) {
                 console.log(error.response);
             }

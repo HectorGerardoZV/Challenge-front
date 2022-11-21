@@ -5,7 +5,11 @@ const ModalContext = createContext();
 const ModalProdiver = ({ children }) => {
     const [modal, setModal] = useState(false);
     const [modalType, setModalType] = useState("");
-    
+    const [messageModal, setMessageModal] = useState({
+        type: "",
+        message: ""
+    })
+
     const toggleModal = (type) => {
         setModal(!modal);
         setModalType(type);
@@ -20,7 +24,9 @@ const ModalProdiver = ({ children }) => {
                 modal,
                 modalType,
                 toggleModal,
-                changeModal
+                changeModal,
+                setMessageModal,
+                messageModal
             }}
         >
             {children}

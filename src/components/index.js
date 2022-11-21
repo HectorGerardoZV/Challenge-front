@@ -8,6 +8,7 @@ import Modal from "./modal/Modal";
 import UserAdminModal from "./modal/UserAdminModal";
 import UserNormalModal from "./modal/UserNormalModal";
 import ModalOptionUser from "./modal/ModalOptionUser";
+import MessageModal from "./modal/MessageModal";
 
 export {
     Input,
@@ -19,5 +20,6 @@ export {
     Modal,
     UserAdminModal,
     UserNormalModal,
-    ModalOptionUser
+    ModalOptionUser,
+    MessageModal
 };

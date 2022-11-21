@@ -1,0 +1,32 @@
+.modal {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: white;
+    border-radius: 1rem;
+}
+
+.modal__gif {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal__gif img {
+    width: 20rem;
+}
+
+.modal button {
+    padding: 1rem;
+    color: var(--color-text);
+    font-weight: bold;
+}
+
+.closeError {
+    background-color: red;
+}
+
+.closeSuccess {
+    background-color: #07A789;
+}
