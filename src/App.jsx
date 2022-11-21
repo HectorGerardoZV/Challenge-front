@@ -2,12 +2,16 @@
 import AppRouter from "./routes/AppRouter";
 //Providers
 import { values } from "./context";
-const { AuthProvider } = values.providers;
+const { AuthProvider, UsersProvider, ModalProdiver } = values.providers;
 const App = () => {
     return (
         <>
             <AuthProvider>
-                <AppRouter />;
+                <ModalProdiver>
+                    <UsersProvider>
+                        <AppRouter />;
+                    </UsersProvider>
+                </ModalProdiver>
             </AuthProvider>
         </>
     );

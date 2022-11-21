@@ -1,3 +1,5 @@
 import useAuth from "./useAuth";
+import useUsers from "./useUsers";
+import useModal from "./useModal";
 
-export { useAuth };
+export { useAuth, useUsers, useModal };

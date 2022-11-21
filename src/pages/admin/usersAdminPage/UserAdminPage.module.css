@@ -1,0 +1,84 @@
+.page {
+    width: 90%;
+    margin: 0 auto;
+    padding: 4rem 0rem;
+}
+
+.page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.searchSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-back);
+    border-radius: 1rem;
+    padding-right: 1rem;
+    width: 50%;
+}
+
+.searchSection input {
+    padding: 1rem;
+    width: 100%;
+    background-color: transparent;
+}
+
+.searchSection img {
+    cursor: pointer;
+}
+
+.btnAdd {
+    background-color: transparent;
+}
+
+.btnAdd img {
+    width: 5rem;
+    transition: .2s ease;
+}
+
+.btnAdd img:hover {
+    transform: scale(1.1);
+}
+
+.tableLayout {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.headTable {
+    background-color: var(--color-main);
+    text-align: center;
+    color: var(--color-text);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    border-radius: .7rem;
+    margin-bottom: 1rem;
+}
+
+.tableBody {
+    height: 35rem;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tableBody::-webkit-scrollbar {
+    width: 1rem;
+}
+
+.tableBody::-webkit-scrollbar-track {
+    background-color: #f4f4f4;
+}
+
+.tableBody::-webkit-scrollbar-thumb {
+    background-color: var(--color-main);
+    border-radius: 1rem;
+}
+
+
+

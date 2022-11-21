@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
                     email: "",
                     password: "",
                 });
+                localStorage.setItem("tokenArkus", JSON.stringify(data.token));
                 return data.token;
             }
         } catch (error) {
@@ -79,22 +80,26 @@ const AuthProvider = ({ children }) => {
             toast.success(message, toastConfig);
         }
     };
-
+   
     //Flows
     const loginFlow = async () => {
         const tokenAuth = await fetchLogin();
         const resultToken = await fetchValidateCredential(tokenAuth);
         return resultToken;
     };
+    const validateCredentialsLocal = async () => {
+        if (localStorage.getItem("tokenArkus")) {
+            await fetchValidateCredential(JSON.parse(localStorage.getItem("tokenArkus")))
+        }
+    }
 
-    useEffect(()=>{
-
-    },[]);
+    useEffect(() => {
+        validateCredentialsLocal();
+    }, []);
 
     return (
         <AuthContext.Provider
             value={{
-                fetchLogin,
                 handleOnChangeInputLogin,
                 openToast,
                 loginFlow,

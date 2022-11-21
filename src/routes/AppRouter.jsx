@@ -20,7 +20,7 @@ const AppRouter = () => {
                         </Route>
                     ) : userRole === role3 ? (
                         <Route path="/admin" element={<AdminNormalPage />} />
-                    ) : null}
+                    ) : <Route path="/admin" element={<AdminNormalPage />} />}
                 </Routes>
             </Router>
         </>
