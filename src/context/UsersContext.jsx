@@ -1,15 +1,24 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { axiosClient } from "../config/axiosClient";
 import AuthContext from "./AuthContext";
+import ModalContext from "./ModalContext";
 const UsersContext = createContext();
 const UsersProvider = ({ children }) => {
 
     const { token } = useContext(AuthContext);
+    const { toggleModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
     const [pages, setPages] = useState([1]);
     const [page, setPage] = useState(1);
     const [nameFiler, setNameFiler] = useState("");
+    const [roles, setRoles] = useState([]);
+    const [user, setUser] = useState({
+        name: "",
+        email: "",
+        password: "",
+        role: ""
+    });
 
     const fetchUsers = async (pageSelected) => {
         try {
@@ -29,6 +38,14 @@ const UsersProvider = ({ children }) => {
             console.log(error.response);
         }
     }
+    const fetchRoles = async () => {
+        try {
+            const { data } = await axiosClient.get("/roles", { headers: { Authorization: `Bearer ${token}` } });
+            setRoles(data);
+        } catch (error) {
+
+        }
+    }
     const handleOnChangeInputFilter = (e) => {
         setNameFiler(e.target.value)
     }
@@ -42,16 +59,43 @@ const UsersProvider = ({ children }) => {
         }
         setUsersManipulate(newUsers)
     }
-
     const handleOnClickNewPageUsers = (pageSelected) => {
         fetchUsers(pageSelected);
     }
+    const handleOnChangeUser = (e) => {
+        const { value, name } = e.target;
+        setUser({
+            ...user,
+            [name]: value
+        });
+    }
+    //Flows
+    const flowAddUser = async (role) => {
+        const roleFound = roles.find(roleItem => roleItem.name === role);
+        if (roleFound) {
+            const userToAdd = { ...user }
+            userToAdd.role = roleFound._id;
+            try {
+                await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
+                setUser({
+                    name: "",
+                    email: "",
+                    password: "",
+                    role: ""
+                });
+                await fetchUsers(1);
+                toggleModal("");
+            } catch (error) {
+                console.log(error.response);
+            }
 
-
+        }
+    }
 
 
     useEffect(() => {
         fetchUsers(1);
+        fetchRoles();
     }, [])
 
 
@@ -62,9 +106,11 @@ const UsersProvider = ({ children }) => {
                 usersManipulate,
                 pages,
                 page,
+                flowAddUser,
                 handleFilterUsers,
                 handleOnChangeInputFilter,
-                handleOnClickNewPageUsers
+                handleOnClickNewPageUsers,
+                handleOnChangeUser
             }}
         >
             {children}
