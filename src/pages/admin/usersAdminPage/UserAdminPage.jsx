@@ -1,7 +1,7 @@
 //Components
 import { Pagination, UserRow } from "../../../components";
 //Hooks
-import { useUsers } from "../../../hooks";
+import { useUsers, useModal } from "../../../hooks";
 
 //Style
 import style from "./UserAdminPage.module.css";
@@ -13,6 +13,7 @@ const UserAdminPage = () => {
         handleOnChangeInputFilter,
         handleOnClickNewPageUsers
     } = useUsers();
+    const { toggleModal } = useModal();
 
     return <section className={style.page}>
         <div className={style.page__header}>
@@ -20,7 +21,7 @@ const UserAdminPage = () => {
                 <input placeholder="Username..." onChange={handleOnChangeInputFilter} />
                 <img src="/icons/icon-search.svg" onClick={handleFilterUsers} />
             </div>
-            <button className={style.btnAdd}>
+            <button className={style.btnAdd} onClick={() => toggleModal("OptionUser")}>
                 <img src="/icons/icon-plus.svg" />
             </button>
         </div>
@@ -33,8 +34,6 @@ const UserAdminPage = () => {
                     <p>Role</p>
                     <p>Actions</p>
                 </div>
-
-
                 <div className={style.tableBody}>
                     {
                         usersManipulate.map((user, i) => (
@@ -50,7 +49,7 @@ const UserAdminPage = () => {
                     }
                 </div>
             </div>
-            <Pagination pages={pages} action={handleOnClickNewPageUsers}/>
+            <Pagination pages={pages} action={handleOnClickNewPageUsers} />
         </section>
     </section>
 };
