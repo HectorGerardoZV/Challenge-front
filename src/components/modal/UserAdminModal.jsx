@@ -10,7 +10,7 @@ import ICON_LOGO from "/icons/icon-logo.svg";
 import style from "./UserModal.module.css"
 const UserAdminModal = () => {
   const { toggleModal } = useModal();
-  const { handleOnChangeUser, flowAddUser } = useUsers();
+  const { handleOnChangeUser, flowAddUserAdmin } = useUsers();
   return (
     <div className={style.modal}>
       <div className={style.modal__header}>
@@ -42,7 +42,7 @@ const UserAdminModal = () => {
       </div>
       <div className={style.modal__option}>
         <button className={style.btnCancel} onClick={() => toggleModal("")}>Cancel</button>
-        <button className={style.btnAcept} onClick={() => flowAddUser("Admin")}>Create</button>
+        <button className={style.btnAcept} onClick={flowAddUserAdmin}>Create</button>
       </div>
     </div>
   )

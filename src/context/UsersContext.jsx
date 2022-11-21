@@ -4,9 +4,8 @@ import AuthContext from "./AuthContext";
 import ModalContext from "./ModalContext";
 const UsersContext = createContext();
 const UsersProvider = ({ children }) => {
-
     const { token } = useContext(AuthContext);
-    const { toggleModal, setMessageModal, changeModal } = useContext(ModalContext);
+    const { setMessageModal, changeModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
     const [pages, setPages] = useState([1]);
@@ -17,8 +16,14 @@ const UsersProvider = ({ children }) => {
         name: "",
         email: "",
         password: "",
-        role: ""
+        englishLevel: "",
+        technicalKnowledge: "",
+        linkCV: "",
+        role: "",
+        user: "",
+
     });
+    const [userAction, setUserAction] = useState({ user: null, action: "" });
 
     const fetchUsers = async (pageSelected) => {
         try {
@@ -77,7 +82,7 @@ const UsersProvider = ({ children }) => {
             const userToAdd = { ...user }
             userToAdd.role = roleFound._id;
             try {
-                await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
+                const { data } = await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
                 setUser({
                     name: "",
                     email: "",
@@ -90,9 +95,38 @@ const UsersProvider = ({ children }) => {
                     message: "User successfully created"
                 });
                 changeModal("Message");
+                return data;
             } catch (error) {
                 console.log(error.response);
             }
+
+        }
+    }
+
+    const flowAddUserAdmin = async () => {
+        await flowAddUser("Admin");
+    }
+    const flowAddUserNormal = async () => {
+        const user = await flowAddUser("Normal");
+        await flowAddNormalUserProfile(user._id);
+    }
+    const flowAddNormalUserProfile = async (idUser) => {
+        const userProfile = {
+            ...user
+        }
+        userProfile.user = idUser;
+        try {
+            await axiosClient.post("/profiles/normal", userProfile, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setMessageModal({
+                type: "success",
+                message: "User successfully created"
+            });
+            changeModal("Message");
+        } catch (error) {
 
         }
     }
@@ -111,7 +145,8 @@ const UsersProvider = ({ children }) => {
                 usersManipulate,
                 pages,
                 page,
-                flowAddUser,
+                flowAddUserAdmin,
+                flowAddUserNormal,
                 handleFilterUsers,
                 handleOnChangeInputFilter,
                 handleOnClickNewPageUsers,

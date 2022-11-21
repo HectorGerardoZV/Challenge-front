@@ -1,0 +1,59 @@
+.modal{
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.modal__header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+.modal__header img{
+    width: 7rem;
+}
+.modal__header h3{
+    font-size: 2rem;
+    font-weight: 400;
+}
+.inputs{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0rem 2rem;
+}
+
+.textAreaStyle {
+    height: 8rem;
+    resize: none;
+}
+.dobleInput{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+}
+.modal__option{
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+    padding: 0rem 2rem;
+}
+.modal__option button{
+    width: 90%;
+    padding: 1rem;
+    color: var(--color-text);
+    transition: .2s ease;
+}
+.modal__option button:hover{
+   transform: scale(1.1);
+}
+.btnCancel{
+    background-color: var(--color-main);
+}
+.btnAcept{
+    background-color: var(--color-acept);
+}

@@ -5,6 +5,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    width: 40rem;
 }
 .modal__header{
     display: flex;

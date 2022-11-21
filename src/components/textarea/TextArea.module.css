@@ -1,0 +1,11 @@
+.textArea{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.textArea textarea{
+    background-color: var(--color-back);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+}
