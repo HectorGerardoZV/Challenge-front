@@ -16,12 +16,12 @@ import style from "./Login.module.css";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
-    const { handleOnChangeInputLogin, fetchLogin, openToast } = useAuth();
+    const { loginFlow, handleOnChangeInputLogin } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const access = await fetchLogin();
+        const access = await loginFlow();
         if (access) {
             setTimeout(() => {
                 navigate("/admin");

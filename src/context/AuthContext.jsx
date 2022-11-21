@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { axiosClient } from "../config/axiosClient";
 import { toast } from "react-toastify";
 const modalTypes = {
@@ -15,6 +15,8 @@ const AuthProvider = ({ children }) => {
         email: "",
         password: "",
     });
+    const [userRole, setUserRole] = useState(null);
+
     const handleOnChangeInputLogin = (e) => {
         const { name, value } = e.target;
         setCredentials({
@@ -32,7 +34,7 @@ const AuthProvider = ({ children }) => {
                     email: "",
                     password: "",
                 });
-                return true;
+                return data.token;
             }
         } catch (error) {
             const { errors } = error.response.data;
@@ -41,6 +43,21 @@ const AuthProvider = ({ children }) => {
                 openToast(msg, modalTypes.ERROR);
             });
             return false;
+        }
+    };
+    const fetchValidateCredential = async (tokenAuth) => {
+        try {
+            const { data } = await axiosClient.get("/auth", {
+                headers: {
+                    Authorization: `Bearer ${tokenAuth}`,
+                },
+            });
+            if (!data.hasOwnProperty("role")) return false;
+            const { role } = data;
+            setUserRole(role);
+            return true;
+        } catch (error) {
+            console.log(error);
         }
     };
     const openToast = (message, type) => {
@@ -62,13 +79,27 @@ const AuthProvider = ({ children }) => {
             toast.success(message, toastConfig);
         }
     };
+
+    //Flows
+    const loginFlow = async () => {
+        const tokenAuth = await fetchLogin();
+        const resultToken = await fetchValidateCredential(tokenAuth);
+        return resultToken;
+    };
+
+    useEffect(()=>{
+
+    },[]);
+
     return (
         <AuthContext.Provider
             value={{
                 fetchLogin,
                 handleOnChangeInputLogin,
                 openToast,
+                loginFlow,
                 token,
+                userRole,
             }}
         >
             {children}
