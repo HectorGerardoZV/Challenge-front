@@ -6,6 +6,9 @@
     padding: 4rem 3rem;
     border-radius: 1rem;
     position: relative;
+    animation-name: animateModal;
+    animation-duration: .3s;
+    transition: .2s ease;
 }
 .optionsModal{
     display: flex;
@@ -34,4 +37,17 @@
     top: 0;
     margin-top: .5rem;
     margin-right: .5rem;
+}
+
+@keyframes animateModal {
+    0%{
+        transform: scale(0);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+    100%{
+        transform: scale(1);
+    }
+
 }
