@@ -1,0 +1,37 @@
+.modalSelectUser{
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    background-color: white;
+    padding: 4rem 3rem;
+    border-radius: 1rem;
+    position: relative;
+}
+.optionsModal{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.optionsModal button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--color-back);
+    transition: .2s ease;
+    border: 2px dashed transparent;
+}
+.optionsModal button img{
+   width: 4rem;
+}
+.optionsModal button:hover{
+    border: 2px dashed var(--color-main);
+    transform: scale(1.1);
+}
+.closeModal{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-top: .5rem;
+    margin-right: .5rem;
+}

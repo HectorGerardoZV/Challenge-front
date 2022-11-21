@@ -1,0 +1,10 @@
+.modal {
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-modal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
