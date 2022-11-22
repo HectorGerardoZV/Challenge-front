@@ -1,42 +1,61 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { axiosClient } from "../config/axiosClient";
+import { toast } from "react-toastify";
+
 import AuthContext from "./AuthContext";
 import ModalContext from "./ModalContext";
 const UsersContext = createContext();
-const UsersProvider = ({ children }) => {
+const modalTypes = {
+    SUCESS: "success",
+    ERROR: "error",
+};
 
-    const { token } = useContext(AuthContext);
-    const { toggleModal, setMessageModal, changeModal } = useContext(ModalContext);
+const UsersProvider = ({ children }) => {
+    const { token, userRole } = useContext(AuthContext);
+    const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
-    const [pages, setPages] = useState([1]);
-    const [page, setPage] = useState(1);
     const [nameFiler, setNameFiler] = useState("");
     const [roles, setRoles] = useState([]);
     const [user, setUser] = useState({
         name: "",
         email: "",
         password: "",
-        role: ""
+        englishLevel: "",
+        technicalKnowledge: "",
+        linkCV: "",
+        role: "",
+        user: "",
+
     });
 
-    const fetchUsers = async (pageSelected) => {
+    const [userSelected, setUserSelected] = useState(null);
+    const [userAction, setUserAction] = useState({ user: null, action: "", role: "" });
+    const fetchUsers = async () => {
         try {
-            const { data } = await axiosClient.get(`/users?page=${pageSelected}`, {
+            const { data: userList } = await axiosClient.get("/users", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            const { totalPages, users: list, page } = data;
-            setPage(page);
-            setUsers(list);
-            setUsersManipulate(list);
-            let pagesOptions = [];
-            for (let i = 1; i <= totalPages; i++) pagesOptions.push(i);
-            setPages(pagesOptions);
+            let newUserList = [];
+            if (userRole === "Admin") {
+                newUserList = userList.filter(userItem => userItem.role !== "Admin")
+                    .filter(userItem => userItem.role !== "SuperAdmin");
+            } else if (userRole === "SuperAdmin") {
+                newUserList = userList.filter(userItem => userItem.role !== "SuperAdmin");
+            } else {
+                newUserList = [...userList];
+            }
+
+            setUsers(newUserList);
+            setUsersManipulate(newUserList);
         } catch (error) {
-            console.log(error);
-            console.log(error.response);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const fetchRoles = async () => {
@@ -44,7 +63,11 @@ const UsersProvider = ({ children }) => {
             const { data } = await axiosClient.get("/roles", { headers: { Authorization: `Bearer ${token}` } });
             setRoles(data);
         } catch (error) {
-
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const handleOnChangeInputFilter = (e) => {
@@ -60,14 +83,31 @@ const UsersProvider = ({ children }) => {
         }
         setUsersManipulate(newUsers)
     }
-    const handleOnClickNewPageUsers = (pageSelected) => {
-        fetchUsers(pageSelected);
-    }
     const handleOnChangeUser = (e) => {
         const { value, name } = e.target;
         setUser({
             ...user,
             [name]: value
+        });
+    }
+    const handleSelectUserAction = (userSelected, actionSelected, roleSelected) => {
+        setUserAction({
+            user: userSelected,
+            action: actionSelected,
+            role: roleSelected
+        })
+    }
+    const resetUserInfo = () => {
+        setUser({
+            name: "",
+            email: "",
+            password: "",
+            englishLevel: "",
+            technicalKnowledge: "",
+            linkCV: "",
+            role: "",
+            user: "",
+
         });
     }
     //Flows
@@ -77,45 +117,198 @@ const UsersProvider = ({ children }) => {
             const userToAdd = { ...user }
             userToAdd.role = roleFound._id;
             try {
-                await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
+                const { data } = await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
                 setUser({
                     name: "",
                     email: "",
                     password: "",
                     role: ""
                 });
-                await fetchUsers(1);
+                await fetchUsers();
                 setMessageModal({
                     type: "success",
                     message: "User successfully created"
                 });
                 changeModal("Message");
+                return data;
             } catch (error) {
-                console.log(error.response);
+                const { errors } = error.response.data;
+                errors.forEach((errorItem) => {
+                    const { msg } = errorItem;
+                    openToast(msg, modalTypes.ERROR);
+                });
+                return null;
             }
 
         }
     }
+    const flowAddUserAdmin = async () => {
+        await flowAddUser("Admin");
+    }
+    const flowAddUserNormal = async () => {
+        const user = await flowAddUser("Normal");
+        if (user) {
+            await flowAddNormalUserProfile(user._id);
+        }
 
+    }
+    const flowAddNormalUserProfile = async (idUser) => {
+        const userProfile = {
+            ...user
+        }
+        userProfile.user = idUser;
+        try {
+            await axiosClient.post("/profiles/normal", userProfile, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setMessageModal({
+                type: "success",
+                message: "User successfully created"
+            });
+            changeModal("Message");
+        } catch (error) {
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+        }
+    }
+    const fetchUserSelected = async () => {
 
+        try {
+            if (userAction.user) {
+                if (userAction.role === "Normal") {
+                    const { data: userFound } = await axiosClient.get(`/profiles/normal/${userAction.user}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    setUserSelected(userFound)
+                    toggleModal("UserNormal");
+                } else {
+                    const { data: userFound } = await axiosClient.get(`/users/${userAction.user}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    setUserSelected(userFound)
+                    toggleModal("UserAdmin");
+                }
+            }
+        } catch (error) {
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+        }
+    }
+    const flowActionUser = async () => {
+        const { action } = userAction;
+        if (action === "update") await flowUpdateUser();
+        else if (action === "delete") await flowDeleteUser();
+    }
+    const flowUpdateUser = async () => {
+        try {
+            const entries = Object.entries({ ...user });
+            let newUserInfo = {};
+            entries.forEach(entry => {
+                const [key, value] = entry;
+                if (value.trim().length > 0) {
+                    newUserInfo = {
+                        ...newUserInfo,
+                        [key]: value
+                    }
+                }
+            });
+            await axiosClient.put(`/users/${userSelected.user._id}`, newUserInfo, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            await fetchUsers();
+            setMessageModal({
+                type: "success",
+                message: "User successfully updated"
+            });
+            changeModal("Message");
+
+        } catch (error) {
+            console.log(error);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+        }
+    }
+    const flowDeleteUser = async () => {
+        try {
+            await axiosClient.delete(`/users/${userAction.user}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            await fetchUsers();
+            setMessageModal({
+                type: "success",
+                message: "User successfully deleted"
+            });
+            changeModal("Message");
+
+        } catch (error) {
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+        }
+    }
+    const openToast = (message, type) => {
+        const toastConfig = {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        };
+        if (type == "error") {
+            toastConfig.autoClose = 5000;
+            toast.error(message, toastConfig);
+        }
+        if (type == "success") {
+            toast.success(message, toastConfig);
+        }
+    };
     useEffect(() => {
-        fetchUsers(1);
-        fetchRoles();
-    }, [])
-
-
+        if (token) {
+            fetchUsers();
+            fetchRoles();
+        }
+    }, [token, userRole])
+    useEffect(() => {
+        if (token) {
+            fetchUserSelected();
+        }
+    }, [userAction])
 
     return (
         <UsersContext.Provider
             value={{
                 usersManipulate,
-                pages,
-                page,
-                flowAddUser,
+                userAction,
+                userSelected,
+                flowAddUserAdmin,
+                flowAddUserNormal,
                 handleFilterUsers,
                 handleOnChangeInputFilter,
-                handleOnClickNewPageUsers,
-                handleOnChangeUser
+                handleOnChangeUser,
+                handleSelectUserAction,
+                setUserSelected,
+                resetUserInfo,
+                flowActionUser
             }}
         >
             {children}

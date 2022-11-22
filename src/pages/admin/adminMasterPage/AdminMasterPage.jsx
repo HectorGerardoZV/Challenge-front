@@ -1,22 +1,24 @@
 import { Outlet } from "react-router-dom";
 //Components
-import { 
-    Menu, 
-    Modal, 
-    UserAdminModal, 
-    ModalOptionUser, 
+import {
+    Menu,
+    Modal,
+    UserAdminModal,
+    ModalOptionUser,
     UserNormalModal,
-    MessageModal 
+    MessageModal
 } from "../../../components";
 //Hooks
 import { useModal } from "../../../hooks";
 //Style
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import style from "./AdminMasterPage.module.css";
 const AdminMasterPage = () => {
     const { modal, modalType } = useModal();
     const modalSelcted = {
-        AddUserAdmin: <UserAdminModal />,
-        AddUserNormal: <UserNormalModal />,
+        UserAdmin: <UserAdminModal />,
+        UserNormal: <UserNormalModal />,
         OptionUser: <ModalOptionUser />,
         Message: <MessageModal />
     }
@@ -34,6 +36,18 @@ const AdminMasterPage = () => {
                     </Modal>
                 ) : null
             }
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         </div>
     );
 };

@@ -15,7 +15,9 @@ const AuthProvider = ({ children }) => {
         email: "",
         password: "",
     });
-    const [userRole, setUserRole] = useState(null);
+    const [userRole, setUserRole] = useState(
+        localStorage.getItem("userRole") ? JSON.parse(localStorage.getItem("userRole")) : null
+    );
 
     const handleOnChangeInputLogin = (e) => {
         const { name, value } = e.target;
@@ -56,9 +58,15 @@ const AuthProvider = ({ children }) => {
             if (!data.hasOwnProperty("role")) return false;
             const { role } = data;
             setUserRole(role);
+            localStorage.setItem("userRole",JSON.stringify(role));
             return true;
         } catch (error) {
-            console.log(error);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+            return false;
         }
     };
     const openToast = (message, type) => {
@@ -80,7 +88,6 @@ const AuthProvider = ({ children }) => {
             toast.success(message, toastConfig);
         }
     };
-   
     //Flows
     const loginFlow = async () => {
         const tokenAuth = await fetchLogin();
@@ -94,7 +101,11 @@ const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        validateCredentialsLocal();
+        if (token) {
+            validateCredentialsLocal();
+        } else {
+            console.log(localStorage.get("tokenArkus"));
+        }
     }, []);
 
     return (

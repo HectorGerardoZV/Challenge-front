@@ -10,12 +10,38 @@ import ICON_LOGO from "/icons/icon-logo.svg";
 import style from "./UserModal.module.css"
 const UserAdminModal = () => {
   const { toggleModal } = useModal();
-  const { handleOnChangeUser, flowAddUser } = useUsers();
+  const {
+    resetUserInfo,
+    handleSelectUserAction,
+    setUserSelected,
+    handleOnChangeUser,
+    flowAddUserAdmin,
+    userAction,
+    userSelected,
+    flowActionUser
+  } = useUsers();
+  const { action } = userAction;
+  let disabled;
+  if (action === "" || action === "update") disabled = false;
+  else disabled = true;
+  let userInfo = { name: "", email: "" };
+  if (userSelected) {
+    userInfo.name = userSelected.name;
+    userInfo.email = userSelected.email;
+  }
+
+  const closeModal = () => {
+    handleSelectUserAction(null, "", "");
+    setUserSelected(null);
+    resetUserInfo();
+    toggleModal("");
+  }
+
   return (
     <div className={style.modal}>
       <div className={style.modal__header}>
         <img src={ICON_LOGO} />
-        <h3>Creating Admin User</h3>
+        <h3>{action === "" ? "Create" : action} Admin User</h3>
       </div>
       <div className={style.modal__inputs}>
         <Input
@@ -24,6 +50,8 @@ const UserAdminModal = () => {
           handleFunction={handleOnChangeUser}
           name={"name"}
           placeholder={"Name..."}
+          disabled={disabled}
+          value={userInfo.name}
         />
         <Input
           type={"email"}
@@ -31,19 +59,42 @@ const UserAdminModal = () => {
           handleFunction={handleOnChangeUser}
           name={"email"}
           placeholder={"Email..."}
+          disabled={disabled}
+          value={userInfo.email}
         />
-        <Input
-          type={"text"}
-          label={"Password"}
-          handleFunction={handleOnChangeUser}
-          name={"password"}
-          placeholder={"Password..."}
-        />
+        {
+          action === "" ? (
+            <Input
+              type={"text"}
+              label={"Password"}
+              handleFunction={handleOnChangeUser}
+              name={"password"}
+              placeholder={"Password..."}
+              disabled={disabled}
+            />
+          ) : null
+        }
       </div>
-      <div className={style.modal__option}>
-        <button className={style.btnCancel} onClick={() => toggleModal("")}>Cancel</button>
-        <button className={style.btnAcept} onClick={() => flowAddUser("Admin")}>Create</button>
-      </div>
+
+      {
+        action === "" ? (
+          <div className={style.modal__option}>
+            <button className={style.btnCancel} onClick={closeModal}>Cancel</button>
+            <button className={style.btnAcept} onClick={flowAddUserAdmin}>Create</button>
+          </div>
+        ) : action === "view" ? (
+          <div className={style.modal__option__close}>
+            <button className={style.btnClose} onClick={closeModal}>Close</button>
+          </div>
+        ) : (
+          <div className={style.modal__option}>
+            <button className={style.btnCancel} onClick={closeModal}>Cancel</button>
+            <button className={style.btnAcept} onClick={flowActionUser}>{action}</button>
+          </div>
+        )
+      }
+
+
     </div>
   )
 }

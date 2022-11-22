@@ -65,6 +65,7 @@ textarea,
 select {
     border: none;
     outline: none;
+    font-family: var(--font);
 }
 
 h1 {
@@ -88,6 +89,7 @@ p,
 a,
 input,
 select,
-option {
+option,
+textarea {
     font-size: 1.8rem;
 }
