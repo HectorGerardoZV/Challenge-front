@@ -11,7 +11,7 @@ const modalTypes = {
 };
 
 const UsersProvider = ({ children }) => {
-    const { token } = useContext(AuthContext);
+    const { token, userRole } = useContext(AuthContext);
     const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
@@ -28,9 +28,9 @@ const UsersProvider = ({ children }) => {
         user: "",
 
     });
+
     const [userSelected, setUserSelected] = useState(null);
     const [userAction, setUserAction] = useState({ user: null, action: "", role: "" });
-
     const fetchUsers = async () => {
         try {
             const { data: userList } = await axiosClient.get("/users", {
@@ -38,8 +38,18 @@ const UsersProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            setUsers(userList);
-            setUsersManipulate(userList);
+            let newUserList = [];
+            if (userRole === "Admin") {
+                newUserList = userList.filter(userItem => userItem.role !== "Admin")
+                    .filter(userItem => userItem.role !== "SuperAdmin");
+            } else if (userRole === "SuperAdmin") {
+                newUserList = userList.filter(userItem => userItem.role !== "SuperAdmin");
+            } else {
+                newUserList = [...userList];
+            }
+
+            setUsers(newUserList);
+            setUsersManipulate(newUserList);
         } catch (error) {
             const { errors } = error.response.data;
             errors.forEach((errorItem) => {
@@ -127,6 +137,7 @@ const UsersProvider = ({ children }) => {
                     const { msg } = errorItem;
                     openToast(msg, modalTypes.ERROR);
                 });
+                return null;
             }
 
         }
@@ -136,7 +147,10 @@ const UsersProvider = ({ children }) => {
     }
     const flowAddUserNormal = async () => {
         const user = await flowAddUser("Normal");
-        await flowAddNormalUserProfile(user._id);
+        if (user) {
+            await flowAddNormalUserProfile(user._id);
+        }
+
     }
     const flowAddNormalUserProfile = async (idUser) => {
         const userProfile = {
@@ -163,6 +177,7 @@ const UsersProvider = ({ children }) => {
         }
     }
     const fetchUserSelected = async () => {
+
         try {
             if (userAction.user) {
                 if (userAction.role === "Normal") {
@@ -205,7 +220,6 @@ const UsersProvider = ({ children }) => {
                     }
                 }
             });
-
             await axiosClient.put(`/users/${userSelected.user._id}`, newUserInfo, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -219,6 +233,7 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
 
         } catch (error) {
+            console.log(error);
             const { errors } = error.response.data;
             errors.forEach((errorItem) => {
                 const { msg } = errorItem;
@@ -268,11 +283,15 @@ const UsersProvider = ({ children }) => {
         }
     };
     useEffect(() => {
-        fetchUsers();
-        fetchRoles();
-    }, [])
+        if (token) {
+            fetchUsers();
+            fetchRoles();
+        }
+    }, [token, userRole])
     useEffect(() => {
-        fetchUserSelected();
+        if (token) {
+            fetchUserSelected();
+        }
     }, [userAction])
 
     return (
