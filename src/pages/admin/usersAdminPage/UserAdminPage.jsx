@@ -1,5 +1,5 @@
 //Components
-import { Pagination, UserRow } from "../../../components";
+import {  UserRow } from "../../../components";
 //Hooks
 import { useUsers, useModal } from "../../../hooks";
 
@@ -8,10 +8,8 @@ import style from "./UserAdminPage.module.css";
 const UserAdminPage = () => {
     const {
         usersManipulate,
-        pages,
         handleFilterUsers,
         handleOnChangeInputFilter,
-        handleOnClickNewPageUsers
     } = useUsers();
     const { toggleModal } = useModal();
 
@@ -49,7 +47,6 @@ const UserAdminPage = () => {
                     }
                 </div>
             </div>
-            <Pagination pages={pages} action={handleOnClickNewPageUsers} />
         </section>
     </section>
 };

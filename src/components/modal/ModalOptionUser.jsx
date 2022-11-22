@@ -16,11 +16,11 @@ const ModalOptionUser = () => {
       </button>
       <h2>Select a user type</h2>
       <div className={style.optionsModal}>
-        <button onClick={() => changeModal("AddUserAdmin")}>
+        <button onClick={() => changeModal("UserAdmin")}>
           <img src={ICON_ADMIN_USER} />
           <p>Administrator</p>
         </button>
-        <button onClick={() => changeModal("AddUserNormal")}>
+        <button onClick={() => changeModal("UserNormal")}>
           <img src={ICON_NORMAL_USER} />
           <p>Normal</p>
         </button>

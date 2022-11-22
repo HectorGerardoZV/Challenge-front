@@ -1,4 +1,4 @@
-.modal{
+.modal {
     padding: 1rem;
     border-radius: 1rem;
     background-color: white;
@@ -6,54 +6,95 @@
     flex-direction: column;
     gap: 2rem;
 }
-.modal__header{
+
+.modal__header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
 }
-.modal__header img{
+
+.modal__header img {
     width: 7rem;
 }
-.modal__header h3{
+
+.modal__header h3 {
     font-size: 2rem;
     font-weight: 400;
 }
-.inputs{
-    display: flex;
-    flex-direction: column;
+
+.inputs_layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     padding: 0rem 2rem;
 }
 
-.textAreaStyle {
-    height: 8rem;
-    resize: none;
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
-.dobleInput{
+
+.textAreaStyle {
+    resize: none;
+    height: 100%;
+}
+
+.dobleInput {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
-.modal__option{
+
+.modal__option {
     display: flex;
     justify-content: space-between;
     gap: 3rem;
     padding: 0rem 2rem;
 }
-.modal__option button{
+
+.modal__option__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.modal__option__close button {
+    width: 60%;
+    padding: 1rem;
+    color: var(--color-text);
+    transition: .2s ease;
+    text-transform: capitalize;
+}
+
+.modal__option button {
     width: 90%;
     padding: 1rem;
     color: var(--color-text);
     transition: .2s ease;
+    text-transform: capitalize;
 }
-.modal__option button:hover{
-   transform: scale(1.1);
+
+.modal__option button:hover {
+    transform: scale(1.1);
 }
-.btnCancel{
+
+.modal__option__close button:hover {
+    transform: scale(1.1);
+}
+
+.btnCancel {
     background-color: var(--color-main);
+
 }
-.btnAcept{
+
+.btnAcept {
     background-color: var(--color-acept);
+}
+
+.btnClose {
+    background-color: var(--color-black);
 }

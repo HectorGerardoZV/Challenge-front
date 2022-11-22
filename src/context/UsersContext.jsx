@@ -5,11 +5,9 @@ import ModalContext from "./ModalContext";
 const UsersContext = createContext();
 const UsersProvider = ({ children }) => {
     const { token } = useContext(AuthContext);
-    const { setMessageModal, changeModal } = useContext(ModalContext);
+    const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
     const [users, setUsers] = useState([]);
     const [usersManipulate, setUsersManipulate] = useState([]);
-    const [pages, setPages] = useState([1]);
-    const [page, setPage] = useState(1);
     const [nameFiler, setNameFiler] = useState("");
     const [roles, setRoles] = useState([]);
     const [user, setUser] = useState({
@@ -23,22 +21,18 @@ const UsersProvider = ({ children }) => {
         user: "",
 
     });
-    const [userAction, setUserAction] = useState({ user: null, action: "" });
+    const [userSelected, setUserSelected] = useState(null);
+    const [userAction, setUserAction] = useState({ user: null, action: "", role: "" });
 
-    const fetchUsers = async (pageSelected) => {
+    const fetchUsers = async () => {
         try {
-            const { data } = await axiosClient.get(`/users?page=${pageSelected}`, {
+            const { data: userList } = await axiosClient.get("/users", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            const { totalPages, users: list, page } = data;
-            setPage(page);
-            setUsers(list);
-            setUsersManipulate(list);
-            let pagesOptions = [];
-            for (let i = 1; i <= totalPages; i++) pagesOptions.push(i);
-            setPages(pagesOptions);
+            setUsers(userList);
+            setUsersManipulate(userList);
         } catch (error) {
             console.log(error);
             console.log(error.response);
@@ -65,14 +59,31 @@ const UsersProvider = ({ children }) => {
         }
         setUsersManipulate(newUsers)
     }
-    const handleOnClickNewPageUsers = (pageSelected) => {
-        fetchUsers(pageSelected);
-    }
     const handleOnChangeUser = (e) => {
         const { value, name } = e.target;
         setUser({
             ...user,
             [name]: value
+        });
+    }
+    const handleSelectUserAction = (userSelected, actionSelected, roleSelected) => {
+        setUserAction({
+            user: userSelected,
+            action: actionSelected,
+            role: roleSelected
+        })
+    }
+    const resetUserInfo = () => {
+        setUser({
+            name: "",
+            email: "",
+            password: "",
+            englishLevel: "",
+            technicalKnowledge: "",
+            linkCV: "",
+            role: "",
+            user: "",
+
         });
     }
     //Flows
@@ -89,7 +100,7 @@ const UsersProvider = ({ children }) => {
                     password: "",
                     role: ""
                 });
-                await fetchUsers(1);
+                await fetchUsers();
                 setMessageModal({
                     type: "success",
                     message: "User successfully created"
@@ -102,7 +113,6 @@ const UsersProvider = ({ children }) => {
 
         }
     }
-
     const flowAddUserAdmin = async () => {
         await flowAddUser("Admin");
     }
@@ -130,27 +140,103 @@ const UsersProvider = ({ children }) => {
 
         }
     }
+    const fetchUserSelected = async () => {
+        try {
+            if (userAction.user) {
+                if (userAction.role === "Normal") {
+                    const { data: userFound } = await axiosClient.get(`/profiles/normal/${userAction.user}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    setUserSelected(userFound)
+                    toggleModal("UserNormal");
+                } else {
+                    const { data: userFound } = await axiosClient.get(`/users/${userAction.user}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    setUserSelected(userFound)
+                    toggleModal("UserAdmin");
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const flowActionUser = async () => {
+        const { action } = userAction;
+        if (action === "update") await flowUpdateUser();
+        else if (action === "delete") await flowDeleteUser();
+    }
+    const flowUpdateUser = async () => {
+        try {
+            const entries = Object.entries({ ...user });
+            let newUserInfo = {};
+            entries.forEach(entry => {
+                const [key, value] = entry;
+                if (value.trim().length > 0) {
+                    newUserInfo = {
+                        ...newUserInfo,
+                        [key]: value
+                    }
+                }
+            });
 
+            await axiosClient.put(`/users/${userSelected.user._id}`, newUserInfo, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            await fetchUsers();
+            setMessageModal({
+                type: "success",
+                message: "User successfully updated"
+            });
+            changeModal("Message");
 
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const flowDeleteUser = async () => {
+        try {
+            await axiosClient.delete(`/users/${userAction.user}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            await fetchUsers();
+            setMessageModal({
+                type: "success",
+                message: "User successfully deleted"
+            });
+            changeModal("Message");
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
     useEffect(() => {
-        fetchUsers(1);
+        fetchUsers();
         fetchRoles();
     }, [])
-
-
+    useEffect(() => {
+        fetchUserSelected();
+    }, [userAction])
 
     return (
         <UsersContext.Provider
             value={{
                 usersManipulate,
-                pages,
-                page,
+                userAction,
+                userSelected,
                 flowAddUserAdmin,
                 flowAddUserNormal,
                 handleFilterUsers,
                 handleOnChangeInputFilter,
-                handleOnClickNewPageUsers,
-                handleOnChangeUser
+                handleOnChangeUser,
+                handleSelectUserAction,
+                setUserSelected,
+                resetUserInfo,
+                flowActionUser
             }}
         >
             {children}

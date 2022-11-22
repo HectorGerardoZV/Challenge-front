@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
 //Components
-import { 
-    Menu, 
-    Modal, 
-    UserAdminModal, 
-    ModalOptionUser, 
+import {
+    Menu,
+    Modal,
+    UserAdminModal,
+    ModalOptionUser,
     UserNormalModal,
-    MessageModal 
+    MessageModal
 } from "../../../components";
 //Hooks
 import { useModal } from "../../../hooks";
@@ -15,8 +15,8 @@ import style from "./AdminMasterPage.module.css";
 const AdminMasterPage = () => {
     const { modal, modalType } = useModal();
     const modalSelcted = {
-        AddUserAdmin: <UserAdminModal />,
-        AddUserNormal: <UserNormalModal />,
+        UserAdmin: <UserAdminModal />,
+        UserNormal: <UserNormalModal />,
         OptionUser: <ModalOptionUser />,
         Message: <MessageModal />
     }
