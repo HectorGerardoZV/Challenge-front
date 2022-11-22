@@ -20,6 +20,7 @@
 .modal__header h3{
     font-size: 2rem;
     font-weight: 400;
+    text-transform: capitalize;
 }
 .modal__inputs{
     display: flex;
@@ -45,4 +46,19 @@
 }
 .btnAcept{
     background-color: var(--color-acept);
+}
+.modal__option__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.modal__option__close button {
+    width: 60%;
+    padding: 1rem;
+    color: var(--color-text);
+    transition: .2s ease;
+    text-transform: capitalize;
+    background-color: var(--color-black);
 }
