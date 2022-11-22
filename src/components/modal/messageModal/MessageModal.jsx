@@ -1,6 +1,6 @@
 import SUCCESS from "/gifs/success.gif";
 import ERROR from "/gifs/error.gif";
-import { useModal } from "../../hooks";
+import { useModal } from "../../../hooks";
 import style from "./MessageModal.module.css";
 const MessageModal = () => {
     const { messageModal, toggleModal } = useModal();

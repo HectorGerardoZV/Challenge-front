@@ -1,7 +1,7 @@
 //Components
-import { Input, TextArea } from "../../components";
+import { Input, TextArea } from "../../../components";
 //Hooks
-import { useUsers, useModal } from "../../hooks";
+import { useUsers, useModal } from "../../../hooks";
 //Icons
 import ICON_LOGO from "/icons/icon-logo.svg";
 //Style
