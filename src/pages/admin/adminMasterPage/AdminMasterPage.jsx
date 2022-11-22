@@ -11,6 +11,8 @@ import {
 //Hooks
 import { useModal } from "../../../hooks";
 //Style
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import style from "./AdminMasterPage.module.css";
 const AdminMasterPage = () => {
     const { modal, modalType } = useModal();
@@ -34,6 +36,18 @@ const AdminMasterPage = () => {
                     </Modal>
                 ) : null
             }
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         </div>
     );
 };

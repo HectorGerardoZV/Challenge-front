@@ -77,7 +77,6 @@ const Login = () => {
                 pauseOnHover
                 theme="light"
             />
-            {/* Same as */}
             <ToastContainer />
         </>
     );

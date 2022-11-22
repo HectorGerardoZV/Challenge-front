@@ -1,8 +1,15 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { axiosClient } from "../config/axiosClient";
+import { toast } from "react-toastify";
+
 import AuthContext from "./AuthContext";
 import ModalContext from "./ModalContext";
 const UsersContext = createContext();
+const modalTypes = {
+    SUCESS: "success",
+    ERROR: "error",
+};
+
 const UsersProvider = ({ children }) => {
     const { token } = useContext(AuthContext);
     const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
@@ -34,8 +41,11 @@ const UsersProvider = ({ children }) => {
             setUsers(userList);
             setUsersManipulate(userList);
         } catch (error) {
-            console.log(error);
-            console.log(error.response);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const fetchRoles = async () => {
@@ -43,7 +53,11 @@ const UsersProvider = ({ children }) => {
             const { data } = await axiosClient.get("/roles", { headers: { Authorization: `Bearer ${token}` } });
             setRoles(data);
         } catch (error) {
-
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const handleOnChangeInputFilter = (e) => {
@@ -108,7 +122,11 @@ const UsersProvider = ({ children }) => {
                 changeModal("Message");
                 return data;
             } catch (error) {
-                console.log(error.response);
+                const { errors } = error.response.data;
+                errors.forEach((errorItem) => {
+                    const { msg } = errorItem;
+                    openToast(msg, modalTypes.ERROR);
+                });
             }
 
         }
@@ -137,7 +155,11 @@ const UsersProvider = ({ children }) => {
             });
             changeModal("Message");
         } catch (error) {
-
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const fetchUserSelected = async () => {
@@ -158,7 +180,11 @@ const UsersProvider = ({ children }) => {
                 }
             }
         } catch (error) {
-            console.log(error);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const flowActionUser = async () => {
@@ -193,7 +219,11 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
 
         } catch (error) {
-            console.log(error);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
     const flowDeleteUser = async () => {
@@ -211,9 +241,32 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
 
         } catch (error) {
-            console.log(error);
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
         }
     }
+    const openToast = (message, type) => {
+        const toastConfig = {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        };
+        if (type == "error") {
+            toastConfig.autoClose = 5000;
+            toast.error(message, toastConfig);
+        }
+        if (type == "success") {
+            toast.success(message, toastConfig);
+        }
+    };
     useEffect(() => {
         fetchUsers();
         fetchRoles();
