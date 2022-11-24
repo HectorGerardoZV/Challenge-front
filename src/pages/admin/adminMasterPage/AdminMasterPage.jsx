@@ -6,7 +6,9 @@ import {
     UserAdminModal,
     ModalOptionUser,
     UserNormalModal,
-    MessageModal
+    MessageModal,
+    ModalAdminAccount,
+    ModalOptionAccount
 } from "../../../components";
 //Hooks
 import { useModal } from "../../../hooks";
@@ -20,7 +22,9 @@ const AdminMasterPage = () => {
         UserAdmin: <UserAdminModal />,
         UserNormal: <UserNormalModal />,
         OptionUser: <ModalOptionUser />,
-        Message: <MessageModal />
+        Message: <MessageModal />,
+        AccountAdmin: <ModalAdminAccount />,
+        OptionAccount: <ModalOptionAccount />
     }
 
     return (

@@ -1,0 +1,67 @@
+.modal {
+    background-color: white;
+    padding: 3rem;
+    border-radius: 1rem;
+}
+
+.modal__header {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.modal__header img {
+    width: 7rem;
+}
+
+.modal__header h3 {
+    font-size: 2rem;
+    font-weight: 400;
+    text-transform: capitalize;
+}
+
+.inputs__double {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.options {
+    width: 90%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.options button {
+    padding: 1rem;
+    font-weight: bold;
+    color: var(--color-text);
+    transition: .2s ease;
+}
+.options button:hover {
+    transform: scale(1.1);
+}
+
+.optionCancel {
+    background-color: var(--color-main);
+}
+
+.optionAcept {
+    background-color: var(--color-acept);
+}
+
+.optionClose {
+    background-color: var(--color-close);
+}

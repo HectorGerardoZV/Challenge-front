@@ -1,0 +1,17 @@
+.accountInfo {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    background-color: var(--color-back);
+    text-align: center;
+    align-items: center;
+}
+
+.accountInfo p {
+    font-size: 1.5rem;
+}
+
+.accountActions {
+    display: flex;
+    justify-content: space-evenly;
+}

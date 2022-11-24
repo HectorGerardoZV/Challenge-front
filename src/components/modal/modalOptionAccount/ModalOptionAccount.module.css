@@ -1,0 +1,50 @@
+.modal {
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 50rem;
+    width: 95%;
+    text-align: center;
+}
+
+.modal__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal__header img {
+    width: 7rem;
+}
+
+.modal__header h3 {
+    font-size: 2rem;
+    font-weight: 400;
+}
+.modalOptions{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 2rem;
+    width: 80%;
+    margin: 0 auto;
+}
+.modalOptions button{
+    padding: 1rem;
+    font-weight: bold;
+    transition: .2s ease;
+    color: var(--color-text);
+}
+.modalOptions button:hover{
+    transform: scale(1.1);
+}
+.optionCancel{
+    background-color: var(--color-black);
+}
+.optionAcept{
+    background-color: var(--color-acept);
+}
