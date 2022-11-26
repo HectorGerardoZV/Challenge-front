@@ -20,7 +20,7 @@ const MessageModal = () => {
     return (
         <div className={style.modal}>
             <div className={style.modal__gif}>
-                <img src={image} />
+                <iframe src="https://embed.lottiefiles.com/animation/96673"></iframe>
             </div>
             <p>{message}</p>
             <button className={style[styleMessage]} onClick={() => toggleModal("")}>Close</button>

@@ -13,31 +13,32 @@ const modalTypes = {
 const UsersProvider = ({ children }) => {
     const { token, userRole } = useContext(AuthContext);
     const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
-    const [users, setUsers] = useState([]);
-    const [usersManipulate, setUsersManipulate] = useState([]);
-    const [nameFiler, setNameFiler] = useState("");
-    const [roles, setRoles] = useState([]);
-    const [user, setUser] = useState({
-        name: "",
-        email: "",
-        password: "",
-        englishLevel: "",
-        technicalKnowledge: "",
-        linkCV: "",
-        role: "",
-        user: "",
+    const requestHeaders = { headers: { Authorization: `Bearer ${token}` } }
 
+    const [userValues, setUserValues] = useState({
+        users: [],
+        usersManipulate: [],
+        nameFiler: "",
+        roles: [],
+        user: "",
+        userSelected: null,
+        userAction: { user: null, action: "", role: "" },
+        userInfo: {
+            name: "",
+            email: "",
+            password: "",
+            englishLevel: "",
+            technicalKnowledge: "",
+            linkCV: "",
+            role: "",
+            user: "",
+        }
     });
 
-    const [userSelected, setUserSelected] = useState(null);
-    const [userAction, setUserAction] = useState({ user: null, action: "", role: "" });
     const fetchUsers = async () => {
         try {
-            const { data: userList } = await axiosClient.get("/users", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
+            const { data: userList } = await axiosClient.get("/users", requestHeaders);
             let newUserList = [];
             if (userRole === "Admin") {
                 newUserList = userList.filter(userItem => userItem.role !== "Admin")
@@ -47,21 +48,7 @@ const UsersProvider = ({ children }) => {
             } else {
                 newUserList = [...userList];
             }
-
-            setUsers(newUserList);
-            setUsersManipulate(newUserList);
-        } catch (error) {
-            const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
-        }
-    }
-    const fetchRoles = async () => {
-        try {
-            const { data } = await axiosClient.get("/roles", { headers: { Authorization: `Bearer ${token}` } });
-            setRoles(data);
+            setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
         } catch (error) {
             const { errors } = error.response.data;
             errors.forEach((errorItem) => {
@@ -71,7 +58,7 @@ const UsersProvider = ({ children }) => {
         }
     }
     const handleOnChangeInputFilter = (e) => {
-        setNameFiler(e.target.value)
+        setUserValues({ ...userValues, nameFiler: e.target.value })
     }
     const handleFilterUsers = () => {
         let newUsers = [];
@@ -81,88 +68,72 @@ const UsersProvider = ({ children }) => {
         } else {
             newUsers = [...users];
         }
-        setUsersManipulate(newUsers)
+        setUserValues({ ...userValues, usersManipulate: newUsers });
     }
     const handleOnChangeUser = (e) => {
         const { value, name } = e.target;
-        setUser({
-            ...user,
-            [name]: value
+        setUserValues({
+            ...userValues, userInfo: {
+                ...userValues.userInfo,
+                [name]: value
+            }
         });
     }
     const handleSelectUserAction = (userSelected, actionSelected, roleSelected) => {
-        setUserAction({
-            user: userSelected,
-            action: actionSelected,
-            role: roleSelected
-        })
+        try {
+            setUserValues({
+                ...userValues,
+                userAction: {
+                    user: userSelected,
+                    action: actionSelected,
+                    role: roleSelected
+                }
+            })
+        } catch (error) {
+            console.log(error);
+        }
+
     }
     const resetUserInfo = () => {
-        setUser({
-            name: "",
-            email: "",
-            password: "",
-            englishLevel: "",
-            technicalKnowledge: "",
-            linkCV: "",
-            role: "",
-            user: "",
+        setUserValues({
+            ...userValues, userInfo: {
+                name: "",
+                email: "",
+                password: "",
+                englishLevel: "",
+                technicalKnowledge: "",
+                linkCV: "",
+                role: "",
+                user: "",
 
+            }
         });
     }
+    const resetUserSelected = () => {
+        setUserValues({ ...userValues, userSelected: null });
+    }
     //Flows
-    const flowAddUser = async (role) => {
-        const roleFound = roles.find(roleItem => roleItem.name === role);
-        if (roleFound) {
-            const userToAdd = { ...user }
+    const flowAddUserAdmin = async () => {
+        try {
+            const userToAdd = { ...userValues.userInfo };
+            const roleFound = userValues.roles.find(role => role.name === "Admin");
             userToAdd.role = roleFound._id;
-            try {
-                const { data } = await axiosClient.post("/users", userToAdd, { headers: { Authorization: `Bearer ${token}` } });
-                setUser({
+            await axiosClient.post("/users", userToAdd, requestHeaders);
+            setUserValues({
+                ...userValues,
+                userInfo: {
                     name: "",
                     email: "",
                     password: "",
-                    role: ""
-                });
-                await fetchUsers();
-                setMessageModal({
-                    type: "success",
-                    message: "User successfully created"
-                });
-                changeModal("Message");
-                return data;
-            } catch (error) {
-                const { errors } = error.response.data;
-                errors.forEach((errorItem) => {
-                    const { msg } = errorItem;
-                    openToast(msg, modalTypes.ERROR);
-                });
-                return null;
-            }
-
-        }
-    }
-    const flowAddUserAdmin = async () => {
-        await flowAddUser("Admin");
-    }
-    const flowAddUserNormal = async () => {
-        const user = await flowAddUser("Normal");
-        if (user) {
-            await flowAddNormalUserProfile(user._id);
-        }
-
-    }
-    const flowAddNormalUserProfile = async (idUser) => {
-        const userProfile = {
-            ...user
-        }
-        userProfile.user = idUser;
-        try {
-            await axiosClient.post("/profiles/normal", userProfile, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+                    englishLevel: "",
+                    technicalKnowledge: "",
+                    linkCV: "",
+                    role: "",
+                    user: "",
+                },
+                userAction: { user: null, action: "", role: "" }
+            })
+            await fetchUsers();
             setMessageModal({
                 type: "success",
                 message: "User successfully created"
@@ -176,21 +147,49 @@ const UsersProvider = ({ children }) => {
             });
         }
     }
+    const flowAddUserNormal = async () => {
+        const userToAdd = { ...userValues.userInfo };
+        let errors = [];
+        if (userToAdd.englishLevel.trim().length < 1) errors.push({ msg: "English level is too short" });
+        if (userToAdd.linkCV.trim().length < 1) errors.push({ msg: "CV Link is too short" })
+        if (userToAdd.technicalKnowledge.trim().length < 5) errors.push({ msg: "Technical knowledge is too short" })
+        if (errors.length !== 0) return showErrors(errors);
+
+        const roleFound = userValues.roles.find(role => role.name === "Normal");
+        userToAdd.role = roleFound._id;
+        try {
+            const { data: userAdded } = await axiosClient.post("/users", userToAdd, requestHeaders);
+            userToAdd.user = userAdded._id;
+            await axiosClient.post("/profiles/normal", userToAdd, requestHeaders);
+            setMessageModal({
+                type: "success",
+                message: "User successfully updated"
+            });
+            changeModal("Message");
+            await fetchUsers();
+        } catch (error) {
+            const { errors } = error.response.data;
+            errors.forEach((errorItem) => {
+                const { msg } = errorItem;
+                openToast(msg, modalTypes.ERROR);
+            });
+        }
+    }
     const fetchUserSelected = async () => {
 
         try {
-            if (userAction.user) {
-                if (userAction.role === "Normal") {
-                    const { data: userFound } = await axiosClient.get(`/profiles/normal/${userAction.user}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+            if (userValues.userAction.user) {
+                if (userValues.userAction.role === "Normal") {
+                    const { data: userFound } = await axiosClient.get(`/profiles/normal/${userValues.userAction.user}`,
+                        requestHeaders
                     )
-                    setUserSelected(userFound)
+                    setUserValues({ ...userValues, userSelected: userFound })
                     toggleModal("UserNormal");
                 } else {
-                    const { data: userFound } = await axiosClient.get(`/users/${userAction.user}`,
-                        { headers: { Authorization: `Bearer ${token}` } }
+                    const { data: userFound } = await axiosClient.get(`/users/${userValues.userAction.user}`,
+                        requestHeaders
                     )
-                    setUserSelected(userFound)
+                    setUserValues({ ...userValues, userSelected: userFound })
                     toggleModal("UserAdmin");
                 }
             }
@@ -203,13 +202,14 @@ const UsersProvider = ({ children }) => {
         }
     }
     const flowActionUser = async () => {
-        const { action } = userAction;
+        const { action } = userValues.userAction;
         if (action === "update") await flowUpdateUser();
         else if (action === "delete") await flowDeleteUser();
     }
     const flowUpdateUser = async () => {
         try {
-            const entries = Object.entries({ ...user });
+            const { role } = userValues.userAction;
+            const entries = Object.entries({ ...userValues.userInfo });
             let newUserInfo = {};
             entries.forEach(entry => {
                 const [key, value] = entry;
@@ -220,11 +220,8 @@ const UsersProvider = ({ children }) => {
                     }
                 }
             });
-            await axiosClient.put(`/users/${userSelected.user._id}`, newUserInfo, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            await axiosClient.put(`/users/${userValues.userAction.user}`, newUserInfo, requestHeaders);
+            if (role === "Normal") await axiosClient.put(`/profiles/normal/${userValues.userAction.user}`, newUserInfo, requestHeaders);
             await fetchUsers();
             setMessageModal({
                 type: "success",
@@ -233,7 +230,6 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
 
         } catch (error) {
-            console.log(error);
             const { errors } = error.response.data;
             errors.forEach((errorItem) => {
                 const { msg } = errorItem;
@@ -243,18 +239,13 @@ const UsersProvider = ({ children }) => {
     }
     const flowDeleteUser = async () => {
         try {
-            await axiosClient.delete(`/users/${userAction.user}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            await axiosClient.delete(`/users/${userValues.userAction.user}`, requestHeaders)
             await fetchUsers();
             setMessageModal({
                 type: "success",
                 message: "User successfully deleted"
             });
             changeModal("Message");
-
         } catch (error) {
             const { errors } = error.response.data;
             errors.forEach((errorItem) => {
@@ -282,33 +273,36 @@ const UsersProvider = ({ children }) => {
             toast.success(message, toastConfig);
         }
     };
+    const showErrors = (errors) => {
+        errors.forEach((errorItem) => {
+            const { msg } = errorItem;
+            openToast(msg, modalTypes.ERROR);
+        });
+    }
     useEffect(() => {
         if (token) {
             fetchUsers();
-            fetchRoles();
         }
-    }, [token, userRole])
+    }, [token, userValues.userRole])
     useEffect(() => {
         if (token) {
             fetchUserSelected();
         }
-    }, [userAction])
+    }, [userValues.userAction])
 
     return (
         <UsersContext.Provider
             value={{
-                usersManipulate,
-                userAction,
-                userSelected,
+                ...userValues,
                 flowAddUserAdmin,
                 flowAddUserNormal,
                 handleFilterUsers,
                 handleOnChangeInputFilter,
                 handleOnChangeUser,
                 handleSelectUserAction,
-                setUserSelected,
                 resetUserInfo,
-                flowActionUser
+                flowActionUser,
+                resetUserSelected
             }}
         >
             {children}

@@ -13,7 +13,7 @@ const UserAdminModal = () => {
   const {
     resetUserInfo,
     handleSelectUserAction,
-    setUserSelected,
+    resetUserSelected,
     handleOnChangeUser,
     flowAddUserAdmin,
     userAction,
@@ -32,7 +32,7 @@ const UserAdminModal = () => {
 
   const closeModal = () => {
     handleSelectUserAction(null, "", "");
-    setUserSelected(null);
+    resetUserSelected(null);
     resetUserInfo();
     toggleModal("");
   }

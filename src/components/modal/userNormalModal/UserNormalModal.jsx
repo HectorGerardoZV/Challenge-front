@@ -11,7 +11,7 @@ const UserNormalModal = () => {
         handleOnChangeUser,
         flowAddUserNormal,
         userSelected,
-        setUserSelected,
+        resetUserSelected,
         handleSelectUserAction,
         userAction,
         resetUserInfo,
@@ -27,7 +27,6 @@ const UserNormalModal = () => {
         linkCV: "",
         role: "",
         user: { name: "", email: "" },
-
     }
     const { user, englishLevel, linkCV, technicalKnowledge } = userValues;
     const { name, email, } = user;
@@ -37,7 +36,7 @@ const UserNormalModal = () => {
     const { toggleModal } = useModal();
     const closeModal = () => {
         handleSelectUserAction(null, "", "");
-        setUserSelected(null);
+        resetUserSelected();
         resetUserInfo();
         toggleModal("");
     }
@@ -75,6 +74,18 @@ const UserNormalModal = () => {
                         disabled={disabled}
                         value={email}
                     />
+                    {
+                        action === "" ? (
+                            <Input
+                                name={"password"}
+                                type={"text"}
+                                placeholder={"Password..."}
+                                label={"Password"}
+                                handleFunction={handleOnChangeUser}
+                                disabled={false}
+                            />
+                        ) : null
+                    }
                     <Input
                         name={"englishLevel"}
                         type={"text"}
@@ -94,18 +105,7 @@ const UserNormalModal = () => {
                         value={linkCV}
                     />
 
-                    {
-                        action === "" ? (
-                            <Input
-                                name={"password"}
-                                type={"text"}
-                                placeholder={"Password..."}
-                                label={"Password"}
-                                handleFunction={handleOnChangeUser}
-                                disabled={false}
-                            />
-                        ) : null
-                    }
+
                 </div>
 
                 <TextArea

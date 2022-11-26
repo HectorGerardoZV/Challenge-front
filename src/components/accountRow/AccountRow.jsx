@@ -1,4 +1,4 @@
-
+import { useNavigate } from "react-router-dom";
 //Components
 import { BtnAction } from "../../components";
 //Hooks
@@ -10,9 +10,13 @@ import VIEW_ICON from "/icons/icon-view.svg";
 //Style
 import style from "./AccountRow.module.css";
 const AccountRow = (props) => {
-    const { handleSelectAccount } = useAccounts();
-
+    const { handleSelectAccount,loadPage } = useAccounts();
+    let navigate= useNavigate();
     const { idAccount, accountName, clientName, responsible } = props;
+    const handleSelectAccountOnClick = (option) => {
+        handleSelectAccount("", "", option);
+        navigate(`/admin/accounts/${idAccount}`);
+    }
     return (
         <div className={style.accountInfo}>
             <p>{accountName}</p>
@@ -22,9 +26,9 @@ const AccountRow = (props) => {
                 <BtnAction image={DELTE_ICON}
                     action={() => handleSelectAccount(idAccount, accountName, "delete")} />
                 <BtnAction image={VIEW_ICON}
-                    action={() => handleSelectAccount(idAccount, accountName, "view")} />
+                    action={() => handleSelectAccountOnClick("view")} />
                 <BtnAction image={UPDATE_ICON}
-                    action={() => handleSelectAccount(idAccount, accountName, "update")} />
+                    action={() => handleSelectAccountOnClick("update")} />
             </div>
         </div>
     )
