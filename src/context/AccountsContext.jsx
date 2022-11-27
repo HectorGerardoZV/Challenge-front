@@ -11,80 +11,86 @@ import ModalContext from "./ModalContext";
 const AccountsContext = createContext();
 const AccountsProdiver = ({ children }) => {
     const { token } = useContext(AuthContext);
+    const requestHeaders = { headers: { Authorization: `Bearer ${token}` } }
     const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
-    const [accounts, setAccounts] = useState([]);
-    const [accountsManipulate, setAccountsManipulate] = useState([]);
-    const [accountInfo, setAccountInfo] = useState({
-        accountName: "",
-        clientName: "",
-        responsible: ""
+    const [accountValues, setAccountValues] = useState({
+        accounts: [],
+        accountsManipulate: [],
+        accountSelected: { idAccount: "", account: "", action: "" },
+        accountInfo: { accountName: "", clientName: "", responsible: "" },
+        account: null,
+        loadingAccount: false
+
     });
-    const [accountSelected, setAccountSelected] = useState({ idAccount: "", account: "", action: "" });
-    const [account, setAccount] = useState(null);
 
     const fetchAccounts = async () => {
         try {
-            const { data } = await axiosClient.get("/accounts", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            setAccounts(data);
-            setAccountsManipulate(data);
+            const { data } = await axiosClient.get("/accounts", requestHeaders);
+            setAccountValues({
+                ...accountValues,
+                accounts: data,
+                accountsManipulate: data
+            });
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const loadPageAccounts = async () => {
         try {
             await fetchAccounts();
         } catch (error) {
-
+            const { errors } = error.response.data;
+            showErrors(errors);
         }
     }
     const handleOnChangeInput = (e) => {
         const { name, value } = e.target;
-        setAccountInfo({
-            ...accountInfo,
-            [name]: value
+        setAccountValues({
+            ...accountValues,
+            accountInfo: {
+                ...accountValues.accountInfo,
+                [name]: value
+            }
         });
     }
     const handleResetAccountInfo = () => {
-        setAccountInfo({
-            accountName: "",
-            clientName: "",
-            responsible: ""
+        setAccountValues({
+            ...accountValues,
+            accountInfo: { accountName: "", clientName: "", responsible: "" }
         });
     }
     const handleSelectAccount = (idAccount, accountName, action) => {
-        setAccountSelected({ idAccount, accountName, action });
+        localStorage.setItem("accountAction", JSON.stringify(action));
+        setAccountValues({
+            ...accountValues,
+            accountSelected: { idAccount, accountName, action }
+        })
     }
     const handleFindAccount = async (idAccount) => {
         try {
-            const { data } = await axiosClient.get(`/accounts/${idAccount}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const { data } = await axiosClient.get(`/accounts/${idAccount}`, requestHeaders);
+            setAccountValues({
+                ...accountValues,
+                account: data
             });
-            setAccount(data);
         } catch (error) {
-            console.log(error);
+            const { errors } = error.response.data;
+            showErrors(errors);
         }
     }
     const handleResetAccount = () => {
-        setAccount(null);
-        setAccountSelected({ idAccount: "", account: "", action: "" });
+        setAccountValues({
+            ...accountValues,
+            account: null,
+            accountSelected: { idAccount: "", account: "", action: "" }
+        });
     }
+
     //Flows
     const addNewAccout = async () => {
         try {
-            await axiosClient.post("/accounts", accountInfo,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await axiosClient.post("/accounts", accountValues.accountInfo, requestHeaders);
             await fetchAccounts();
             setMessageModal({
                 type: "success",
@@ -93,14 +99,11 @@ const AccountsProdiver = ({ children }) => {
             changeModal("Message");
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const actionAccountFlow = async () => {
-        const { action, idAccount } = accountSelected;
+        const { action, idAccount } = { ...accountValues.accountSelected };
         await handleFindAccount(idAccount);
         if (action === "delete") {
             toggleModal("OptionAccount");
@@ -108,13 +111,12 @@ const AccountsProdiver = ({ children }) => {
     }
     const deleteAccountFlow = async (idAccount) => {
         try {
-            await axiosClient.delete(`/accounts/${idAccount}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            await axiosClient.delete(`/accounts/${idAccount}`, requestHeaders);
+            setAccountValues({
+                ...accountValues,
+                account: null,
             });
-            setAccount(null);
-            fetchAccounts();
+            await fetchAccounts();
             setMessageModal({
                 type: "success",
                 message: "Account successfully deleted"
@@ -122,12 +124,30 @@ const AccountsProdiver = ({ children }) => {
             changeModal("Message");
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
+    const updateAccountFlow = async () => {
+        try {
+            const { _id: idAccount } = { ...accountValues.account };
+            let values = Object.entries({ ...accountValues.accountInfo }).filter(account => account[1] !== "");
+            let newAccount = {};
+            values.forEach(account => newAccount[account[0]] = account[1]);
+            await axiosClient.put(`/accounts/${idAccount}`, newAccount, requestHeaders);
+            await fetchAccounts();
+            toggleModal("Success");
+            setMessageModal({
+                type: "success",
+                message: "Account successfully updated"
+            });
+            changeModal("Message");
+        } catch (error) {
+            const { errors } = error.response.data;
+            showErrors(errors);
+        }
+    }
+
+
     const openToast = (message, type) => {
         const toastConfig = {
             position: "top-right",
@@ -147,20 +167,35 @@ const AccountsProdiver = ({ children }) => {
             toast.success(message, toastConfig);
         }
     };
-
-
+    const showErrors = (errors) => {
+        errors.forEach((errorItem) => {
+            const { msg } = errorItem;
+            openToast(msg, modalTypes.ERROR);
+        });
+    }
+    const loadPage = async (idAccount) => {
+        const action = JSON.parse(localStorage.getItem("accountAction"));
+        const accoutSelected = { ...accountValues };
+        accoutSelected.accountSelected.action = action;
+        setAccountValues(accoutSelected);
+        try {
+            const { data } = await axiosClient.get(`/accounts/${idAccount}`, requestHeaders);
+            const newAccountValues = { ...accountValues };
+            newAccountValues.account = data;
+            setAccountValues(newAccountValues);
+        } catch (error) {
+            console.log(error);
+        }
+    }
     useEffect(() => {
-        if (accountSelected.account !== "") {
+        if (accountValues.accountSelected.account !== "") {
             actionAccountFlow();
         }
-    }, [accountSelected]);
+    }, [accountValues.accountSelected]);
     return (
         <AccountsContext.Provider
             value={{
-                accountsManipulate,
-                accountInfo,
-                account,
-                accountSelected,
+                ...accountValues,
                 loadPageAccounts,
                 handleOnChangeInput,
                 handleResetAccountInfo,
@@ -168,7 +203,8 @@ const AccountsProdiver = ({ children }) => {
                 handleSelectAccount,
                 deleteAccountFlow,
                 handleResetAccount,
-
+                loadPage,
+                updateAccountFlow
             }}
         >
             {children}

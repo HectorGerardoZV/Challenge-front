@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 //Pages
-import { 
-    Login, 
-    AdminMasterPage, 
-    UserAdminPage, 
+import {
+    Login,
+    AdminMasterPage,
+    UserAdminPage,
     AdminNormalPage,
-    AccountsAdminPage 
+    AccountsAdminPage,
+    AccountPage
 } from "../pages";
 import { useAuth } from "../hooks";
 
@@ -24,6 +25,8 @@ const AppRouter = () => {
                         <Route path="/admin" element={<AdminMasterPage />}>
                             <Route index element={<UserAdminPage />} />
                             <Route path="accounts" element={<AccountsAdminPage />} />
+                            <Route path="accounts/:id" element={<AccountPage />} />
+
                         </Route>
                     ) : userRole === role3 ? (
                         <Route path="/admin" element={<AdminNormalPage />} />

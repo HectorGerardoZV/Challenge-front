@@ -3,11 +3,13 @@ import AdminMasterPage from "./admin/adminMasterPage/AdminMasterPage";
 import UserAdminPage from "./admin/usersAdminPage/UserAdminPage";
 import AdminNormalPage from "./normal/adminNormalPage/AdminNormalPage";
 import AccountsAdminPage from "./admin/accountsAdminPage/AccountsAdminPage";
+import AccountPage from "./admin/accountsAdminPage/accountPage/AccountPage";
 
 export {
     Login,
     AdminMasterPage,
     UserAdminPage,
     AdminNormalPage,
-    AccountsAdminPage
+    AccountsAdminPage,
+    AccountPage
 };

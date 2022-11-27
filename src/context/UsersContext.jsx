@@ -34,7 +34,6 @@ const UsersProvider = ({ children }) => {
             user: "",
         }
     });
-
     const fetchUsers = async () => {
         try {
             const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
@@ -51,22 +50,21 @@ const UsersProvider = ({ children }) => {
             setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const handleOnChangeInputFilter = (e) => {
-        setUserValues({ ...userValues, nameFiler: e.target.value })
+        const newValues = { ...userValues };
+        newValues.nameFiler = e.target.value;
+        setUserValues(newValues);
     }
     const handleFilterUsers = () => {
         let newUsers = [];
-        if (nameFiler.trim().length > 0) {
-            newUsers = [...users].filter(userItem =>
-                userItem.name.toLowerCase().trim().includes(nameFiler.toLowerCase().trim()))
+        if (userValues.nameFiler.trim().length > 0) {
+            newUsers = [...userValues.users].filter(userItem =>
+                userItem.name.toLowerCase().trim().includes(userValues.nameFiler.toLowerCase().trim()))
         } else {
-            newUsers = [...users];
+            newUsers = [...userValues.users];
         }
         setUserValues({ ...userValues, usersManipulate: newUsers });
     }
@@ -80,19 +78,14 @@ const UsersProvider = ({ children }) => {
         });
     }
     const handleSelectUserAction = (userSelected, actionSelected, roleSelected) => {
-        try {
-            setUserValues({
-                ...userValues,
-                userAction: {
-                    user: userSelected,
-                    action: actionSelected,
-                    role: roleSelected
-                }
-            })
-        } catch (error) {
-            console.log(error);
-        }
-
+        setUserValues({
+            ...userValues,
+            userAction: {
+                user: userSelected,
+                action: actionSelected,
+                role: roleSelected
+            }
+        });
     }
     const resetUserInfo = () => {
         setUserValues({
@@ -105,7 +98,6 @@ const UsersProvider = ({ children }) => {
                 linkCV: "",
                 role: "",
                 user: "",
-
             }
         });
     }
@@ -141,10 +133,7 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const flowAddUserNormal = async () => {
@@ -169,14 +158,10 @@ const UsersProvider = ({ children }) => {
             await fetchUsers();
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const fetchUserSelected = async () => {
-
         try {
             if (userValues.userAction.user) {
                 if (userValues.userAction.role === "Normal") {
@@ -195,10 +180,7 @@ const UsersProvider = ({ children }) => {
             }
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const flowActionUser = async () => {
@@ -231,10 +213,7 @@ const UsersProvider = ({ children }) => {
 
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const flowDeleteUser = async () => {
@@ -248,10 +227,7 @@ const UsersProvider = ({ children }) => {
             changeModal("Message");
         } catch (error) {
             const { errors } = error.response.data;
-            errors.forEach((errorItem) => {
-                const { msg } = errorItem;
-                openToast(msg, modalTypes.ERROR);
-            });
+            showErrors(errors);
         }
     }
     const openToast = (message, type) => {
