@@ -1,0 +1,14 @@
+{
+    "page":"number",
+    "pages":"number",
+    "drugs":[
+        {
+            "name":"string",
+            "quantity":"number",
+            "dosage":"string",
+            "image":"string",
+            "id":"string",
+            "ubication":"string"
+        }
+    ]
+}

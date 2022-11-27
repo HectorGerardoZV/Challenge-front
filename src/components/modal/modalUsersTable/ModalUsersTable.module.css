@@ -1,0 +1,117 @@
+.usersTableModal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 70rem;
+}
+
+.usersTableModal h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 400;
+}
+
+.usersTableModal h2 span {
+    color: var(--color-main);
+}
+
+.usersTable__head {
+    margin-bottom: 1rem;
+    background-color: var(--color-back);
+    border-radius: .5rem;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    align-items: center;
+}
+
+.usersTable__head input {
+    padding: 1rem;
+    background-color: transparent;
+}
+
+.usersTable__head button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background-color: transparent;
+}
+
+.usersTable__titles {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: var(--color-main);
+    text-align: center;
+    color: var(--color-text);
+    border-radius: .5rem;
+    margin-bottom: .5rem;
+}
+
+.userTableRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--color-back);
+    border-radius: .5rem;
+    cursor: pointer;
+}
+.userTableRow p{
+    font-size: 1.5rem;
+}
+
+.userTableRow:hover {
+    background-color: var(--color-acept);
+    color: var(--color-text);
+}
+
+.usersTable__body {
+    height: 30rem;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.usersTable__body::-webkit-scrollbar {
+    width: 1rem;
+}
+
+.usersTable__body::-webkit-scrollbar-track {
+    background-color: #f4f4f4;
+}
+
+.usersTable__body::-webkit-scrollbar-thumb {
+    background-color: var(--color-main);
+    border-radius: 1rem;
+}
+
+.usersTable__actions{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 2rem;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 2rem;
+}
+.usersTable__actions button{
+    width: 100%;
+    padding: 1rem;
+    color: var(--color-text);
+    transition: .2s ease;
+    font-weight: 400;
+}
+.usersTable__actions button:hover{
+    transform: scale(1.1);
+}
+.closeButton{
+    background-color: var(--color-main);
+}
+.aceptButton{
+    background-color: var(--color-acept);
+}
+.selected{
+    background-color: var(--color-acept);
+    color: var(--color-text);
+}

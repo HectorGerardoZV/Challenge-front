@@ -8,6 +8,7 @@ const modalTypes = {
 //Hooks
 import AuthContext from "./AuthContext";
 import ModalContext from "./ModalContext";
+
 const AccountsContext = createContext();
 const AccountsProdiver = ({ children }) => {
     const { token } = useContext(AuthContext);
@@ -19,8 +20,8 @@ const AccountsProdiver = ({ children }) => {
         accountSelected: { idAccount: "", account: "", action: "" },
         accountInfo: { accountName: "", clientName: "", responsible: "" },
         account: null,
-        loadingAccount: false
-
+        loadingAccount: false,
+        accountName: ""
     });
 
     const fetchAccounts = async () => {
@@ -86,6 +87,18 @@ const AccountsProdiver = ({ children }) => {
             accountSelected: { idAccount: "", account: "", action: "" }
         });
     }
+    const handleOnChangeNameFilter = (e) => {
+        setAccountValues({ ...accountValues, accountName: e.target.value });
+    }
+    const handleFilterAccountsByName = () => {
+        let newAccountsManipulate = [];
+        if (accountValues.accountName.trim().length > 0) {
+            newAccountsManipulate = [...accountValues.accountsManipulate]
+                .filter(account => account.accountName.trim().toLowerCase()
+                    .includes(accountValues.accountName.trim().toLowerCase()));
+        } else newAccountsManipulate = [...accountValues.accounts];
+        setAccountValues({ ...accountValues, accountsManipulate: newAccountsManipulate });
+    }
 
     //Flows
     const addNewAccout = async () => {
@@ -146,8 +159,6 @@ const AccountsProdiver = ({ children }) => {
             showErrors(errors);
         }
     }
-
-
     const openToast = (message, type) => {
         const toastConfig = {
             position: "top-right",
@@ -199,6 +210,8 @@ const AccountsProdiver = ({ children }) => {
                 loadPageAccounts,
                 handleOnChangeInput,
                 handleResetAccountInfo,
+                handleOnChangeNameFilter,
+                handleFilterAccountsByName,
                 addNewAccout,
                 handleSelectAccount,
                 deleteAccountFlow,

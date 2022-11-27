@@ -32,7 +32,8 @@ const UsersProvider = ({ children }) => {
             linkCV: "",
             role: "",
             user: "",
-        }
+        },
+        userToTeam: null
     });
     const fetchUsers = async () => {
         try {
@@ -103,6 +104,17 @@ const UsersProvider = ({ children }) => {
     }
     const resetUserSelected = () => {
         setUserValues({ ...userValues, userSelected: null });
+    }
+    const handleResetUserFilter = () => {
+        const newValues = { ...userValues };
+        newValues.nameFiler = "";
+        setUserValues(newValues);
+    }
+    const handleAddUserToTeam = (user) => {
+        setUserValues({
+            ...userValues,
+            userToTeam: user
+        });
     }
     //Flows
     const flowAddUserAdmin = async () => {
@@ -278,7 +290,9 @@ const UsersProvider = ({ children }) => {
                 handleSelectUserAction,
                 resetUserInfo,
                 flowActionUser,
-                resetUserSelected
+                resetUserSelected,
+                handleAddUserToTeam,
+                handleResetUserFilter
             }}
         >
             {children}
