@@ -3,7 +3,7 @@ import ICON_NORMAL_USER from "/icons/icon-user-normal.svg";
 import ICON_CLOSE_MODAL from "/icons/icon-close-modal.svg";
 
 //Hooks
-import { useModal, useAuth } from "../../hooks";
+import { useModal, useAuth } from "../../../hooks";
 
 //Style
 import style from "./ModalOptionUser.module.css";

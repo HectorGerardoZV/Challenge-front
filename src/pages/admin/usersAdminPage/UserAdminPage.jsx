@@ -1,8 +1,9 @@
 //Components
-import {  UserRow } from "../../../components";
+import { UserRow } from "../../../components";
 //Hooks
 import { useUsers, useModal } from "../../../hooks";
-
+import ICON_SEACH from "/icons/icon-search.svg";
+import ICON_PLUS from "/icons/icon-plus.svg";
 //Style
 import style from "./UserAdminPage.module.css";
 const UserAdminPage = () => {
@@ -13,14 +14,20 @@ const UserAdminPage = () => {
     } = useUsers();
     const { toggleModal } = useModal();
 
+    const handleEnter = (e) => {
+        if (e.key.trim() === "Enter") handleFilterUsers();
+    }
     return <section className={style.page}>
         <div className={style.page__header}>
             <div className={style.searchSection}>
-                <input placeholder="Username..." onChange={handleOnChangeInputFilter} />
-                <img src="/icons/icon-search.svg" onClick={handleFilterUsers} />
+                <input placeholder="Username..."
+                    onChange={handleOnChangeInputFilter}
+                    onKeyDown={handleEnter}
+                />
+                <img src={ICON_SEACH} onClick={handleFilterUsers} />
             </div>
             <button className={style.btnAdd} onClick={() => toggleModal("OptionUser")}>
-                <img src="/icons/icon-plus.svg" />
+                <img src={ICON_PLUS} />
             </button>
         </div>
 

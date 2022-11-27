@@ -11,7 +11,7 @@ const Menu = () => {
 
             <div className={style.menu__option}>
                 <Link to={"/admin"}>Users</Link>
-                <Link to={"/admin"}>Accounts</Link>
+                <Link to={"/admin/accounts"}>Accounts</Link>
                 <Link to={"/admin"}>Move User</Link>
                 <Link to={"/admin"}>Transactions Log</Link>
                 <button className={style.btnLogout}>

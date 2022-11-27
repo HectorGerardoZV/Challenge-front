@@ -1,8 +1,8 @@
 //Components
-import { Input } from "../../components";
+import { Input } from "../../../components";
 
 //Hooks
-import { useModal, useUsers } from "../../hooks";
+import { useModal, useUsers } from "../../../hooks";
 
 //Icons
 import ICON_LOGO from "/icons/icon-logo.svg";
@@ -13,7 +13,7 @@ const UserAdminModal = () => {
   const {
     resetUserInfo,
     handleSelectUserAction,
-    setUserSelected,
+    resetUserSelected,
     handleOnChangeUser,
     flowAddUserAdmin,
     userAction,
@@ -32,7 +32,7 @@ const UserAdminModal = () => {
 
   const closeModal = () => {
     handleSelectUserAction(null, "", "");
-    setUserSelected(null);
+    resetUserSelected(null);
     resetUserInfo();
     toggleModal("");
   }
