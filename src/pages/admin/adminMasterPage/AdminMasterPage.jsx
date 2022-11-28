@@ -8,7 +8,8 @@ import {
     UserNormalModal,
     MessageModal,
     ModalAdminAccount,
-    ModalOptionAccount
+    ModalOptionAccount,
+    ModalUsersTable
 } from "../../../components";
 //Hooks
 import { useModal } from "../../../hooks";
@@ -24,7 +25,8 @@ const AdminMasterPage = () => {
         OptionUser: <ModalOptionUser />,
         Message: <MessageModal />,
         AccountAdmin: <ModalAdminAccount />,
-        OptionAccount: <ModalOptionAccount />
+        OptionAccount: <ModalOptionAccount />,
+        UsersTable: <ModalUsersTable />
     }
 
     return (

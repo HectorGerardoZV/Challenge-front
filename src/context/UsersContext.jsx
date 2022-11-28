@@ -9,6 +9,9 @@ const modalTypes = {
     SUCESS: "success",
     ERROR: "error",
 };
+const ROLE1 = import.meta.env.VITE_ROLE1//Admin
+const ROLE2 = import.meta.env.VITE_ROLE2//SuperAdmin
+const ROLE3 = import.meta.env.VITE_ROLE3//Normal
 
 const UsersProvider = ({ children }) => {
     const { token, userRole } = useContext(AuthContext);
@@ -32,25 +35,28 @@ const UsersProvider = ({ children }) => {
             linkCV: "",
             role: "",
             user: "",
-        }
+        },
+        userToTeam: null
     });
     const fetchUsers = async () => {
-        try {
-            const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
-            const { data: userList } = await axiosClient.get("/users", requestHeaders);
-            let newUserList = [];
-            if (userRole === "Admin") {
-                newUserList = userList.filter(userItem => userItem.role !== "Admin")
-                    .filter(userItem => userItem.role !== "SuperAdmin");
-            } else if (userRole === "SuperAdmin") {
-                newUserList = userList.filter(userItem => userItem.role !== "SuperAdmin");
-            } else {
-                newUserList = [...userList];
+        if (userRole !== ROLE3) {
+            try {
+                const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
+                const { data: userList } = await axiosClient.get("/users", requestHeaders);
+                let newUserList = [];
+                if (userRole === ROLE1) {
+                    newUserList = userList.filter(userItem => userItem.role !== ROLE1)
+                        .filter(userItem => userItem.role !== ROLE2);
+                } else if (userRole === ROLE2) {
+                    newUserList = userList.filter(userItem => userItem.role !== ROLE2);
+                } else {
+                    newUserList = [...userList];
+                }
+                setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
+            } catch (error) {
+                const { errors } = error.response.data;
+                showErrors(errors);
             }
-            setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
-        } catch (error) {
-            const { errors } = error.response.data;
-            showErrors(errors);
         }
     }
     const handleOnChangeInputFilter = (e) => {
@@ -87,6 +93,7 @@ const UsersProvider = ({ children }) => {
             }
         });
     }
+
     const resetUserInfo = () => {
         setUserValues({
             ...userValues, userInfo: {
@@ -98,17 +105,30 @@ const UsersProvider = ({ children }) => {
                 linkCV: "",
                 role: "",
                 user: "",
-            }
+            },
+            userAction: { user: null, action: "", role: "" },
+            userSelected: null
         });
     }
     const resetUserSelected = () => {
         setUserValues({ ...userValues, userSelected: null });
     }
+    const handleResetUserFilter = () => {
+        const newValues = { ...userValues };
+        newValues.nameFiler = "";
+        setUserValues(newValues);
+    }
+    const handleAddUserToTeam = (user) => {
+        setUserValues({
+            ...userValues,
+            userToTeam: user
+        });
+    }
     //Flows
     const flowAddUserAdmin = async () => {
         try {
             const userToAdd = { ...userValues.userInfo };
-            const roleFound = userValues.roles.find(role => role.name === "Admin");
+            const roleFound = userValues.roles.find(role => role.name === ROLE1);
             userToAdd.role = roleFound._id;
             await axiosClient.post("/users", userToAdd, requestHeaders);
             setUserValues({
@@ -144,7 +164,7 @@ const UsersProvider = ({ children }) => {
         if (userToAdd.technicalKnowledge.trim().length < 5) errors.push({ msg: "Technical knowledge is too short" })
         if (errors.length !== 0) return showErrors(errors);
 
-        const roleFound = userValues.roles.find(role => role.name === "Normal");
+        const roleFound = userValues.roles.find(role => role.name === ROLE3);
         userToAdd.role = roleFound._id;
         try {
             const { data: userAdded } = await axiosClient.post("/users", userToAdd, requestHeaders);
@@ -164,7 +184,7 @@ const UsersProvider = ({ children }) => {
     const fetchUserSelected = async () => {
         try {
             if (userValues.userAction.user) {
-                if (userValues.userAction.role === "Normal") {
+                if (userValues.userAction.role === ROLE3) {
                     const { data: userFound } = await axiosClient.get(`/profiles/normal/${userValues.userAction.user}`,
                         requestHeaders
                     )
@@ -203,7 +223,7 @@ const UsersProvider = ({ children }) => {
                 }
             });
             await axiosClient.put(`/users/${userValues.userAction.user}`, newUserInfo, requestHeaders);
-            if (role === "Normal") await axiosClient.put(`/profiles/normal/${userValues.userAction.user}`, newUserInfo, requestHeaders);
+            if (role === ROLE3) await axiosClient.put(`/profiles/normal/${userValues.userAction.user}`, newUserInfo, requestHeaders);
             await fetchUsers();
             setMessageModal({
                 type: "success",
@@ -278,7 +298,9 @@ const UsersProvider = ({ children }) => {
                 handleSelectUserAction,
                 resetUserInfo,
                 flowActionUser,
-                resetUserSelected
+                resetUserSelected,
+                handleAddUserToTeam,
+                handleResetUserFilter
             }}
         >
             {children}

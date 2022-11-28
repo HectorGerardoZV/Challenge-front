@@ -10,7 +10,6 @@ import style from "./ModalOptionUser.module.css";
 const ModalOptionUser = () => {
   const { toggleModal, changeModal } = useModal();
   const { userRole } = useAuth();
-  console.log(userRole);
   return (
     <div className={style.modalSelectUser}>
       <button className={style.closeModal} onClick={() => toggleModal("")}>

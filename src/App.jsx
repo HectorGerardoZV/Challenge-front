@@ -2,7 +2,14 @@
 import AppRouter from "./routes/AppRouter";
 //Providers
 import { values } from "./context";
-const { AuthProvider, UsersProvider, ModalProdiver, AccountsProdiver } = values.providers;
+const {
+    AuthProvider,
+    UsersProvider,
+    ModalProdiver,
+    AccountsProdiver,
+    TeamsProvider,
+    TransactionsProvider
+} = values.providers;
 const App = () => {
     return (
         <>
@@ -10,7 +17,11 @@ const App = () => {
                 <ModalProdiver>
                     <UsersProvider>
                         <AccountsProdiver>
-                            <AppRouter />;
+                            <TeamsProvider>
+                                <TransactionsProvider>
+                                    <AppRouter />;
+                                </TransactionsProvider>
+                            </TeamsProvider>
                         </AccountsProdiver>
                     </UsersProvider>
                 </ModalProdiver>

@@ -12,9 +12,14 @@ const AccountsAdminPage = () => {
     const {
         loadPageAccounts,
         accountsManipulate,
+        handleOnChangeNameFilter,
+        handleFilterAccountsByName,
     } = useAccounts();
     const { toggleModal } = useModal();
 
+    const handleOnKeyDow = (e) => {
+        if (e.key === "Enter") handleFilterAccountsByName();
+    }
     useEffect(() => {
         loadPageAccounts();
     }, []);
@@ -22,8 +27,11 @@ const AccountsAdminPage = () => {
         <section className={style.page}>
             <div className={style.page__header}>
                 <div className={style.searchSection}>
-                    <input placeholder="Account..." onChange={() => { }} />
-                    <img src={ICON_SEACH} onClick={() => { }} />
+                    <input placeholder="Account..."
+                        onChange={handleOnChangeNameFilter}
+                        onKeyDown={handleOnKeyDow}
+                    />
+                    <img src={ICON_SEACH} onClick={handleFilterAccountsByName} />
                 </div>
                 <button className={style.btnAdd} onClick={() => toggleModal("AccountAdmin")}>
                     <img src={ICON_PLUS} />

@@ -7,6 +7,15 @@
     align-items: center;
 }
 
+.userInfoView {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 1rem;
+    background-color: var(--color-back);
+    text-align: center;
+    align-items: center;
+}
+
 .userInfo p {
     font-size: 1.5rem;
 }

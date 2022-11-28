@@ -3,18 +3,29 @@ import { Link, useParams } from "react-router-dom";
 //Accounts
 import { AccountCard, AccountTeam, Spin } from "../../../../components";
 //Hooks
-import { useAccounts } from "../../../../hooks";
+import { useAccounts, useModal, useTeams } from "../../../../hooks";
 //Icons
 import ICON_BACK from "/icons/icon-back.svg";
+import ICON_PLUS from "/icons/icon-plus.svg";
 //Style
 import style from "./AccountPage.module.css";
 const AccountPage = () => {
-    const { handleResetAccount, accountSelected, loadingAccount, loadPage, updateAccountFlow } = useAccounts();
+    const {
+        handleResetAccount,
+        accountSelected,
+        loadingAccount,
+        loadPage,
+        updateAccountFlow
+    } = useAccounts();
+    const { flowFindATeam } = useTeams();
+    const { toggleModal } = useModal();
     const { action } = accountSelected;
     const param = useParams();
-
     useEffect(() => {
-        if (param?.id) loadPage(param.id)
+        if (param?.id) {
+            loadPage(param.id)
+            flowFindATeam(param.id);
+        }
     }, []);
 
     return (
@@ -34,7 +45,17 @@ const AccountPage = () => {
 
                 </div>
                 <div className={style.accountPage__section}>
-                    <h3 className={style.section__title}>Account <span>team</span></h3>
+                    <div className={style.accountPage__action}>
+                        <p></p>
+                        <h3 className={style.section__title}>Account <span>team</span></h3>
+                        <div>
+                            <button className={`${style.buttonAdd} ${action === "view" ? style.hiddeButtonAdd : ""}`}
+                                onClick={() => toggleModal("UsersTable")}
+                            >
+                                <img src={ICON_PLUS} />
+                            </button>
+                        </div>
+                    </div>
                     <AccountTeam />
                     {
                         action === "update" ? (

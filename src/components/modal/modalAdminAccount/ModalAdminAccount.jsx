@@ -9,12 +9,12 @@ import style from "./ModalAdminAccount.module.css";
 const ModalAdminAccount = () => {
 
     const { toggleModal } = useModal();
-    const { handleOnChangeInput, accountInfo, handleResetAccountInfo, addNewAccout } = useAccounts();
+    const { handleOnChangeInput, accountInfo, resetUserInfo, addNewAccout } = useAccounts();
     const { accountName, clientName, responsible } = accountInfo;
 
     const closeModal = () => {
         toggleModal("");
-        handleResetAccountInfo();
+        resetUserInfo();
     }
     return (
         <div className={style.modal}>

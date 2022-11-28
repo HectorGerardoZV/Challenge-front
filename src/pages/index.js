@@ -4,6 +4,7 @@ import UserAdminPage from "./admin/usersAdminPage/UserAdminPage";
 import AdminNormalPage from "./normal/adminNormalPage/AdminNormalPage";
 import AccountsAdminPage from "./admin/accountsAdminPage/AccountsAdminPage";
 import AccountPage from "./admin/accountsAdminPage/accountPage/AccountPage";
+import TransactionLogPage from "./admin/transactionLogPage/TransactionLogPage";
 
 export {
     Login,
@@ -11,5 +12,6 @@ export {
     UserAdminPage,
     AdminNormalPage,
     AccountsAdminPage,
-    AccountPage
+    AccountPage,
+    TransactionLogPage,
 };

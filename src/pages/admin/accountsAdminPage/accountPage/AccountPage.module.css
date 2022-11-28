@@ -45,41 +45,79 @@
 .accountPage__layout {
     margin-top: 3rem;
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 45% 55%;
     gap: 3rem;
 }
 
 .section__title {
     text-align: center;
-    margin-bottom: 3rem;
     font-weight: 600;
 }
 
 .section__title span {
     color: var(--color-main);
 }
-.options{
+
+.options {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 3rem;
     width: 70%;
     margin: 0 auto;
     margin-top: 2rem;
 }
-.options button{
+
+.options button {
     width: 100%;
     padding: 1rem;
     color: var(--color-text);
     border-radius: .5rem;
     transition: .2s ease;
 }
-.options button:hover{
+
+.options button:hover {
     transform: scale(1.1);
 }
 
-.buttonCancel{
+.buttonCancel {
     background-color: var(--color-main);
 }
-.buttonAcept{
+
+.buttonAcept {
     background-color: var(--color-acept);
+}
+
+.accountPage__action {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section__title:first-child {
+    margin-bottom: 2rem;
+}
+
+.accountPage__action div {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.buttonAdd {
+    background-color: transparent;
+    width: 7rem;
+    transition: .2s ease;
+}
+
+.buttonAdd:hover {
+    transform: scale(1.1);
+}
+
+.buttonAdd img {
+    width: 5rem;
+}
+
+.hiddeButtonAdd,
+.hiddeButtonAdd img {
+    width: 0;
 }

@@ -14,6 +14,7 @@ import ModalOptionAccount from "./modal/modalOptionAccount/ModalOptionAccount";
 import AccountCard from "./accountCard/AccountCard";
 import AccountTeam from "./accountTeam/AccountTeam";
 import Spin from "./spin/Spin";
+import ModalUsersTable from "./modal/modalUsersTable/ModalUsersTable";
 
 export {
     Input,
@@ -31,5 +32,6 @@ export {
     ModalOptionUser,
     MessageModal,
     ModalAdminAccount,
-    ModalOptionAccount
+    ModalOptionAccount,
+    ModalUsersTable
 };
