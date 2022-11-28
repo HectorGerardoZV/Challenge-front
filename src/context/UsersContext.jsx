@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react"
 import { axiosClient } from "../config/axiosClient";
 import { toast } from "react-toastify";
-
 import AuthContext from "./AuthContext";
 import ModalContext from "./ModalContext";
 const UsersContext = createContext();
@@ -14,7 +13,7 @@ const ROLE2 = import.meta.env.VITE_ROLE2//SuperAdmin
 const ROLE3 = import.meta.env.VITE_ROLE3//Normal
 
 const UsersProvider = ({ children }) => {
-    const { token, userRole } = useContext(AuthContext);
+    const { token, userRole,userId } = useContext(AuthContext);
     const { setMessageModal, changeModal, toggleModal } = useContext(ModalContext);
     const requestHeaders = { headers: { Authorization: `Bearer ${token}` } }
 
@@ -57,6 +56,14 @@ const UsersProvider = ({ children }) => {
                 const { errors } = error.response.data;
                 showErrors(errors);
             }
+        }
+    }
+    const fetchUser = async()=>{
+        try {
+            const {data} = await axiosClient.get(`/profiles/normal/${userId}`,requestHeaders);
+            setUserValues({...userValues,user:data});
+        } catch (error) {
+            
         }
     }
     const handleOnChangeInputFilter = (e) => {
@@ -300,7 +307,9 @@ const UsersProvider = ({ children }) => {
                 flowActionUser,
                 resetUserSelected,
                 handleAddUserToTeam,
-                handleResetUserFilter
+                handleResetUserFilter,
+                fetchUser,
+                fetchUsers
             }}
         >
             {children}

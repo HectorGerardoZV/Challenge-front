@@ -18,6 +18,9 @@ const AuthProvider = ({ children }) => {
     const [userRole, setUserRole] = useState(
         localStorage.getItem("userRole") ? JSON.parse(localStorage.getItem("userRole")) : null
     );
+    const [userId, setUserId] = useState(
+        localStorage.getItem("userId") ? JSON.parse(localStorage.getItem("userId")) : null
+    )
 
     const handleOnChangeInputLogin = (e) => {
         const { name, value } = e.target;
@@ -56,9 +59,11 @@ const AuthProvider = ({ children }) => {
                 },
             });
             if (!data.hasOwnProperty("role")) return false;
-            const { role } = data;
+            const { role, id } = data;
             setUserRole(role);
-            localStorage.setItem("userRole",JSON.stringify(role));
+            setUserId(id);
+            localStorage.setItem("userRole", JSON.stringify(role));
+            localStorage.setItem("userId", JSON.stringify(id));
             return true;
         } catch (error) {
             const { errors } = error.response.data;
@@ -116,6 +121,7 @@ const AuthProvider = ({ children }) => {
                 loginFlow,
                 token,
                 userRole,
+                userId
             }}
         >
             {children}
