@@ -36,22 +36,24 @@ const UsersProvider = ({ children }) => {
         userToTeam: null
     });
     const fetchUsers = async () => {
-        try {
-            const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
-            const { data: userList } = await axiosClient.get("/users", requestHeaders);
-            let newUserList = [];
-            if (userRole === "Admin") {
-                newUserList = userList.filter(userItem => userItem.role !== "Admin")
-                    .filter(userItem => userItem.role !== "SuperAdmin");
-            } else if (userRole === "SuperAdmin") {
-                newUserList = userList.filter(userItem => userItem.role !== "SuperAdmin");
-            } else {
-                newUserList = [...userList];
+        if (userRole !== "Normal") {
+            try {
+                const { data: roleList } = await axiosClient.get("/roles", requestHeaders);
+                const { data: userList } = await axiosClient.get("/users", requestHeaders);
+                let newUserList = [];
+                if (userRole === "Admin") {
+                    newUserList = userList.filter(userItem => userItem.role !== "Admin")
+                        .filter(userItem => userItem.role !== "SuperAdmin");
+                } else if (userRole === "SuperAdmin") {
+                    newUserList = userList.filter(userItem => userItem.role !== "SuperAdmin");
+                } else {
+                    newUserList = [...userList];
+                }
+                setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
+            } catch (error) {
+                const { errors } = error.response.data;
+                showErrors(errors);
             }
-            setUserValues({ ...userValues, users: newUserList, roles: roleList, usersManipulate: newUserList });
-        } catch (error) {
-            const { errors } = error.response.data;
-            showErrors(errors);
         }
     }
     const handleOnChangeInputFilter = (e) => {

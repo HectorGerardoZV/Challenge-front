@@ -50,9 +50,7 @@ const TeamsProvider = ({ children }) => {
                 user,
                 team
             }
-            console.log(userTeam);
             const {data:res} = await axiosClient.post("/teams", userTeam, requestHeaders);
-            console.log(res);
             setMessageModal({
                 type: "success",
                 message: "User successfully added"

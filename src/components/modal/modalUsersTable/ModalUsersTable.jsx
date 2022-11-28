@@ -1,6 +1,6 @@
 
 //Hooks
-import { useUsers, useModal, useTeams } from "../../../hooks";
+import { useUsers, useModal, useTeams,useAccounts } from "../../../hooks";
 //Icons
 import ICON_SEACH from "/icons/icon-search.svg";
 //Style
