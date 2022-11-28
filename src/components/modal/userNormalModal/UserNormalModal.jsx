@@ -104,8 +104,6 @@ const UserNormalModal = () => {
                         disabled={disabled}
                         value={linkCV}
                     />
-
-
                 </div>
 
                 <TextArea

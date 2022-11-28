@@ -6,7 +6,8 @@ import {
     UserAdminPage,
     AdminNormalPage,
     AccountsAdminPage,
-    AccountPage
+    AccountPage,
+    TransactionLogPage
 } from "../pages";
 import { useAuth } from "../hooks";
 
@@ -26,6 +27,7 @@ const AppRouter = () => {
                             <Route index element={<UserAdminPage />} />
                             <Route path="accounts" element={<AccountsAdminPage />} />
                             <Route path="accounts/:id" element={<AccountPage />} />
+                            <Route path="transactions" element={<TransactionLogPage />} />
 
                         </Route>
                     ) : userRole === role3 ? (

@@ -7,7 +7,8 @@ const {
     UsersProvider,
     ModalProdiver,
     AccountsProdiver,
-    TeamsProvider
+    TeamsProvider,
+    TransactionsProvider
 } = values.providers;
 const App = () => {
     return (
@@ -17,7 +18,9 @@ const App = () => {
                     <UsersProvider>
                         <AccountsProdiver>
                             <TeamsProvider>
-                                <AppRouter />;
+                                <TransactionsProvider>
+                                    <AppRouter />;
+                                </TransactionsProvider>
                             </TeamsProvider>
                         </AccountsProdiver>
                     </UsersProvider>

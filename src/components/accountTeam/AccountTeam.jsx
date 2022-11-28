@@ -1,10 +1,7 @@
 //Components
-import { Spin, BtnAction } from "../../components";
+import { Spin } from "../../components";
 //Hooks
 import { useAccounts, useTeams } from "../../hooks";
-//Icons
-import DELTE_ICON from "/icons/icon-delete.svg";
-import VIEW_ICON from "/icons/icon-view.svg";
 //Style
 import style from "./AccountTeam.module.css";
 const AccountTeam = () => {
@@ -15,7 +12,6 @@ const AccountTeam = () => {
             <div className={style.accountTeam__header}>
                 <p>Username</p>
                 <p>Email</p>
-                <p>Actions</p>
             </div>
             <div className={style.accountTeam__body}>
                 {loadingAccount ? (<Spin />) :
@@ -29,16 +25,6 @@ const AccountTeam = () => {
                                     >
                                         <p>{name}</p>
                                         <p>{email}</p>
-                                        <div className={style.userTeam__actions}>
-                                            <BtnAction
-                                                action={() => { }}
-                                                image={DELTE_ICON}
-                                            />
-                                            <BtnAction
-                                                action={() => { }}
-                                                image={VIEW_ICON}
-                                            />
-                                        </div>
                                     </div>
                                 )
                             })

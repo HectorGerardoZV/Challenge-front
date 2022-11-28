@@ -88,6 +88,7 @@ const UsersProvider = ({ children }) => {
             }
         });
     }
+
     const resetUserInfo = () => {
         setUserValues({
             ...userValues, userInfo: {
@@ -99,7 +100,9 @@ const UsersProvider = ({ children }) => {
                 linkCV: "",
                 role: "",
                 user: "",
-            }
+            },
+            userAction: { user: null, action: "", role: "" },
+            userSelected: null
         });
     }
     const resetUserSelected = () => {

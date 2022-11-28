@@ -45,7 +45,7 @@
 .accountPage__layout {
     margin-top: 3rem;
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 45% 55%;
     gap: 3rem;
 }
 

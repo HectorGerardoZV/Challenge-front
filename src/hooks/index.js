@@ -3,4 +3,12 @@ import useUsers from "./useUsers";
 import useModal from "./useModal";
 import useAccounts from "./useAccounts";
 import useTeams from "./useTeams";
-export { useAuth, useUsers, useModal, useAccounts, useTeams };
+import useTransactions from "./useTransactions";
+export {
+    useAuth,
+    useUsers,
+    useModal,
+    useAccounts,
+    useTeams,
+    useTransactions
+};
