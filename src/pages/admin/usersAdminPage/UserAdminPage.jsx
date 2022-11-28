@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 //Components
 import { UserRow } from "../../../components";
 //Hooks
@@ -11,12 +12,17 @@ const UserAdminPage = () => {
         usersManipulate,
         handleFilterUsers,
         handleOnChangeInputFilter,
+        fetchUsers
     } = useUsers();
     const { toggleModal } = useModal();
 
     const handleEnter = (e) => {
         if (e.key.trim() === "Enter") handleFilterUsers();
     }
+
+    useEffect(()=>{
+        fetchUsers();
+    },[])
     return <section className={style.page}>
         <div className={style.page__header}>
             <div className={style.searchSection}>
